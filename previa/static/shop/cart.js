@@ -14,7 +14,12 @@
   function render() {
     const lines = S.cart.lines();
     if (!lines.length) {
-      root.innerHTML = `<div class="s-empty" style="grid-column:1/-1;text-align:left;padding:30px 0 80px"><h2>Seu carrinho está vazio.</h2><p>As peças de drops que já aconteceram ficam no shop enquanto houver estoque.</p><p style="margin-top:22px"><a class="s-btn" href="/shop">Ir para o shop</a></p></div>`;
+      // Retomar de onde parou: salvos primeiro, depois o que foi visto.
+      const savedList = S.saved.products().slice(0, 4);
+      const seen = S.viewed.products().filter(x => !savedList.some(y => y.id === x.id)).slice(0, 4);
+      const rail = (t, l) => l.length ? `<section class="s-related" style="grid-column:1/-1;margin:0 calc(var(--gut) * -1)"><h2>${t}</h2><div class="s-grid">${l.map(x => S.card(x, 'h3')).join('')}</div></section>` : '';
+      root.innerHTML = `<div class="s-empty" style="grid-column:1/-1;text-align:left;padding:30px 0 ${savedList.length || seen.length ? 40 : 80}px"><h2>Seu carrinho está vazio.</h2><p>As peças de drops que já aconteceram ficam no shop enquanto houver estoque.</p><p style="margin-top:22px"><a class="s-btn" href="/shop">Ir para o shop</a></p></div>` +
+        rail('Seus salvos', savedList) + rail('Vistos por você', seen);
       return;
     }
     const sub = S.cart.subtotal();
@@ -48,6 +53,8 @@
       <a class="s-btn full" href="/checkout" ${S.cart.count() ? '' : 'aria-disabled="true" style="pointer-events:none;opacity:.4"'}>Ir para o checkout</a>
       ${anyBad ? '<p class="s-warn">Remova os itens indisponíveis para seguir.</p>' : ''}
       <p class="s-note">Os itens do carrinho não ficam reservados. O estoque é conferido de novo antes de concluir.</p>
+      ${S.dropWeekNote()}
+      <ul class="s-assure"><li>Compra sem cadastro, só com e-mail</li><li>Pix, cartão ou boleto</li><li>Devolução em até 7 dias do recebimento</li></ul>
     </aside>`;
   }
 

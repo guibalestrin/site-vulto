@@ -6,6 +6,7 @@
 (() => {
   'use strict';
   const D = window.VULTO_DATA;
+  const V = window.VULTO;
 
   /* ---------- configuração comercial ----------
      A venda do estoque remanescente pelo site é uma proposta deste projeto.
@@ -14,15 +15,21 @@
   const CONFIG = {
     remainingStockOnSite: true, // liga ou desliga a venda pós-drop no site
     showSoldOut: true,          // mostra peças esgotadas como SOLD OUT (sem compra)
-    cartKey: 'vulto-cart-v1'
+    lowStock: 3,                // "Últimas unidades" só abaixo disso, contado no estoque real
+    cartKey: 'vulto-cart-v1',
+    savedKey: 'vulto-saved-v1',
+    viewedKey: 'vulto-viewed-v1'
   };
 
-  /* Agora. Para testar a regra dos drops: ?simular-data=2026-10-30T20:00 */
-  function now() {
-    const q = new URLSearchParams(location.search).get('simular-data');
-    const t = q ? Date.parse(q.length <= 10 ? q + 'T12:00:00-03:00' : (/[zZ]|[+-]\d\d:?\d\d$/.test(q) ? q : q + '-03:00')) : NaN;
-    return isNaN(t) ? Date.now() : t;
-  }
+  /* Pontos de integração. Hoje nada está conectado: cada função responde que o serviço não existe. */
+  const INTEGRATIONS = {
+    quoteShipping: async (/* cep, linhas */) => ({ available: false }),
+    createPayment: async (/* pedido, método */) => ({ available: false }),
+    reserveStock: async (/* linhas */) => ({ available: false })
+  };
+
+  /* Agora. Para testar a regra dos drops: ?simular-data=2026-10-30T20:00 (ver vulto.js) */
+  const now = V.now;
 
   const dropById = Object.fromEntries(D.drops.map(d => [d.id, d]));
   const catById = Object.fromEntries(D.categories.map(c => [c.id, c]));
@@ -45,14 +52,40 @@
     return true;
   }
   const isPurchasable = (p, t = now()) => isListed(p, t) && !isSoldOut(p);
+  /* Teaser: peça marcada teaser, de drop confirmado, na semana antes do lançamento. Aparece como
+     "app exclusive", sem preço de compra no site e fora do carrinho. */
+  const isTeaser = (p, t = now()) => p.status === 'published' && !!p.teaser && V.inTeaser(dropById[p.dropId], t);
   const listedProducts = () => D.products.filter(p => isListed(p)).map(enrich);
-  const productBySlug = slug => { const p = D.products.find(x => x.slug === slug); return p && isListed(p) ? enrich(p) : null; };
+  const teaserProducts = () => D.products.filter(p => isTeaser(p)).map(enrich);
+  const productBySlug = slug => { const p = D.products.find(x => x.slug === slug); return p && (isListed(p) || isTeaser(p)) ? enrich(p) : null; };
   const productById = id => { const p = D.products.find(x => x.id === id); return p && isListed(p) ? enrich(p) : null; };
+  const visibleById = id => { const p = D.products.find(x => x.id === id); return p && (isListed(p) || isTeaser(p)) ? enrich(p) : null; };
+
+  /* Um drop esgotou quando todas as peças dele no shop esgotaram. */
+  const dropSoldOut = dropId => { const ps = D.products.filter(p => p.dropId === dropId && isListed(p)); return ps.length > 0 && ps.every(isSoldOut); };
 
   function enrich(p) {
     const drop = dropById[p.dropId];
+    const stock = totalStock(p);
+    const sizesIn = p.sizes.filter(s => p.variants.some(v => v.size === s && v.stock > 0));
+    const comingSoon = !isListed(p) && isTeaser(p);
     return { ...p, drop, releaseDate: drop.launchAt, categoryName: catById[p.category]?.name || p.category,
-      soldOut: isSoldOut(p), colors: colorsOf(p) };
+      soldOut: isSoldOut(p), colors: colorsOf(p), comingSoon, stock, sizesIn,
+      lowStock: !comingSoon && stock > 0 && stock <= CONFIG.lowStock,
+      lastSize: !comingSoon && p.sizes.length > 1 && sizesIn.length === 1 ? sizesIn[0] : null,
+      dropSoldOut: dropSoldOut(p.dropId) };
+  }
+
+  /* Uma etiqueta por cartão, no máximo, sempre derivada de dado real. */
+  const HIGHLIGHT = { 'mais-visto-do-drop': 'Mais visto do drop', 'em-alta': 'Em alta na comunidade', 'mais-salvo-semana': 'Mais salvo da semana' };
+  function statusFlag(p) {
+    if (p.comingSoon) return { cls: 'app', text: 'App exclusive' };
+    if (p.soldOut) return { cls: 'out', text: p.dropSoldOut ? 'Drop esgotado' : 'Sold out' };
+    if (p.lowStock) return { cls: 'last', text: 'Últimas unidades' };
+    if (p.lastSize) return { cls: 'last', text: `Último tamanho: ${p.lastSize}` };
+    if (HIGHLIGHT[p.highlight]) return { cls: '', text: HIGHLIGHT[p.highlight] };
+    if (p.noRestock) return { cls: '', text: 'Não haverá restock' };
+    return null;
   }
 
   /* ---------- formatação ---------- */
@@ -120,6 +153,45 @@
     subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); }
   };
   addEventListener('storage', e => { if (e.key === CONFIG.cartKey) { memory = readCart(); listeners.forEach(fn => fn()); } });
+
+  /* ---------- salvos e vistos recentemente (só neste aparelho) ---------- */
+  const lists = {};
+  function readList(k) {
+    try { const v = JSON.parse(localStorage.getItem(k) || 'null'); if (Array.isArray(v)) return v; } catch { /* armazenamento indisponível */ }
+    return lists[k] || [];
+  }
+  function writeList(k, v) { lists[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* vale só nesta página */ } }
+  const saved = {
+    has: id => readList(CONFIG.savedKey).includes(id),
+    count: () => saved.products().length,
+    toggle(id) {
+      const l = readList(CONFIG.savedKey); const i = l.indexOf(id);
+      if (i >= 0) l.splice(i, 1); else l.unshift(id);
+      writeList(CONFIG.savedKey, l); paintSaved();
+      return i < 0;
+    },
+    products: () => readList(CONFIG.savedKey).map(visibleById).filter(Boolean)
+  };
+  const viewed = {
+    add(id) { writeList(CONFIG.viewedKey, [id, ...readList(CONFIG.viewedKey).filter(x => x !== id)].slice(0, 12)); },
+    products: (except) => readList(CONFIG.viewedKey).filter(id => id !== except).map(visibleById).filter(Boolean)
+  };
+  const BOOKMARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h11v17l-5.5-4.2-5.5 4.2z"/></svg>';
+  const saveButton = (p, cls = 's-save') =>
+    `<button class="${cls}" type="button" data-save="${p.id}" aria-pressed="${saved.has(p.id)}" aria-label="Salvar ${esc(p.name)}">${BOOKMARK}<span>Salvar</span></button>`;
+  function paintSaved() {
+    document.querySelectorAll('[data-save]').forEach(b => b.setAttribute('aria-pressed', String(saved.has(b.dataset.save))));
+    const n = saved.count();
+    document.querySelectorAll('[data-saved-count]').forEach(el => { el.textContent = n ? ` (${n})` : ''; });
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-save]'); if (!b) return;
+    e.preventDefault();
+    const p = visibleById(b.dataset.save); if (!p) return;
+    const on = saved.toggle(p.id);
+    announce(on ? `${p.name} salvo. Seus salvos ficam em Shop, Salvos.` : `${p.name} saiu dos salvos.`);
+  });
+  addEventListener('storage', e => { if (e.key === CONFIG.savedKey) paintSaved(); });
 
   /* ---------- ilustrações temporárias das peças (substituir por fotos) ---------- */
   let svgSeq = 0;
@@ -227,14 +299,38 @@
     const tag = (im, cls) => im.kind === 'photo'
       ? `<img class="${cls}" src="${esc(im.src)}" alt="" loading="lazy" decoding="async" width="1600" height="900">`
       : im.html.replace('<svg class="g-svg"', `<svg class="g-svg ${cls}" aria-hidden="true"`).replace(/<title>.*?<\/title>/, '');
-    const dots = p.colors.length > 1
+    const dots = p.comingSoon ? `<span>Abre ${esc(V.dayMonth(p.drop))}, 19h, só no app</span>`
+      : p.colors.length > 1
       ? `<span class="s-dots" aria-hidden="true">${p.colors.map(c => `<i class="s-dot" style="background:${colorHex(c)}"></i>`).join('')}</span><span>${p.colors.length} cores</span>`
       : `<span>${esc(colorName(p.colors[0]))}</span>`;
-    return `<a class="s-card ${p.soldOut ? 'is-out' : ''}" href="/shop/${p.slug}">
-      <div class="s-media">${p.soldOut ? '<span class="s-flag out">Sold out</span>' : ''}${tag(main, 'main' + (alt ? ' has-alt' : ''))}${alt ? tag(alt, 'alt') : ''}</div>
-      <div class="s-info"><${h}>${esc(p.name)}</${h}><span class="s-price">${money(p.price)}</span><span class="s-sub">${dots}</span></div>
-      <span class="s-sr">${p.soldOut ? 'Esgotado. ' : ''}${esc(dropLabel(p.drop))}</span>
-    </a>`;
+    const f = statusFlag(p);
+    return `<div class="s-cell"><a class="s-card ${p.soldOut ? 'is-out' : ''}" href="/shop/${p.slug}">
+      <div class="s-media">${f ? `<span class="s-flag ${f.cls}">${esc(f.text)}</span>` : ''}${tag(main, 'main' + (alt ? ' has-alt' : ''))}${alt ? tag(alt, 'alt') : ''}</div>
+      <div class="s-info"><span class="s-dl">${esc(dropLabel(p.drop))}</span><${h}>${esc(p.name)}</${h}><span class="s-price">${money(p.price)}</span><span class="s-sub">${dots}</span></div>
+    </a>${saveButton(p)}</div>`;
+  }
+
+  /* ---------- próximo drop, semana de drop e app ---------- */
+  function nextDropHTML() {
+    const next = V.nextDrop(), open = V.justOpened();
+    const app = V.appButtons(next ? `drop/${next.id}` : '', 's-btn', 's-btn ghost');
+    if (next) {
+      return `<div class="s-next"><p class="mono s-next-k"><i aria-hidden="true"></i>Next drop · ${esc(dropLabel(next))}</p>
+        <p class="s-next-when">${esc(V.whenLabel(next))}</p>${V.clockHTML(next)}
+        <div class="s-next-row">${app || '<a class="s-btn" href="/#entrar">Ativar lembrete</a>'}<button class="s-link" type="button" data-ics="${next.id}">Adicionar à agenda</button></div>
+        <p class="s-note">O drop acontece no app. As peças só chegam ao shop depois.</p></div>`;
+    }
+    if (open) {
+      return `<div class="s-next"><p class="mono s-next-k"><i aria-hidden="true"></i>${esc(dropLabel(open))}</p>
+        <p class="s-next-when">Aberto agora no app</p><div class="s-next-row">${app || '<a class="s-btn ghost" href="/#entrar">Entrar na lista</a>'}</div></div>`;
+    }
+    return `<div class="s-next is-quiet"><p class="mono s-next-k">Next drop</p><p class="s-next-when">Data a anunciar</p>
+      <p class="s-note">Drops abrem às quintas, 19h, só no app.</p><div class="s-next-row"><a class="s-link" href="/#entrar">Ativar lembrete</a></div></div>`;
+  }
+  /* Aviso de prazo na semana depois de um drop (é quando as reclamações de entrega se concentram). */
+  function dropWeekNote() {
+    const d = V.dropWeek();
+    return d ? `<p class="s-notice"><b>Semana de drop.</b> O ${esc(dropLabel(d))} abriu em ${dateBR(d.launchAt)}. Com muito pedido saindo de uma vez, o prazo de entrega pode ser maior que o normal.</p>` : '';
   }
 
   /* ---------- cabeçalho, rodapé e aviso ---------- */
@@ -257,12 +353,13 @@
       foot.innerHTML = `<div class="s-wrap s-foot">
           <a class="s-logo" href="/" aria-label="Vulto, voltar para a Home">${LOGO}</a>
           <p>O shop vende peças de drops que já aconteceram. Lançamento novo abre só no app, quinta às 19h.</p>
-          <ul><li><a href="/shop">Shop</a></li><li><a href="/cart">Carrinho</a></li><li><a href="/#entrar">Lista de espera</a></li></ul>
+          <ul><li><a href="/shop">Shop</a></li><li><a href="/shop?salvos=1">Salvos<span data-saved-count></span></a></li><li><a href="/cart">Carrinho</a></li><li><a href="/#entrar">Lista de espera</a></li>${V.links.tracking ? `<li><a href="${esc(V.links.tracking)}" rel="noopener">Rastrear pedido</a></li>` : ''}${V.links.support ? `<li><a href="${esc(V.links.support)}" rel="noopener">Atendimento</a></li>` : ''}</ul>
         </div>
+        <ul class="s-wrap s-trust" aria-label="Compra no site"><li>Pix, cartão ou boleto</li><li>Devolução em até 7 dias do recebimento</li><li>Estoque conferido antes de concluir</li><li>25 lojas físicas, 12 com ship from store</li></ul>
         <p class="s-wrap s-demo">Loja demonstrativa: produtos, preços e estoques são fictícios e nenhuma compra é processada.</p>`;
     }
     const paint = () => document.querySelectorAll('[data-cart-count]').forEach(el => { el.textContent = cart.count(); });
-    paint(); cart.subscribe(paint);
+    paint(); cart.subscribe(paint); paintSaved();
   }
 
   /* Aviso curto e acessível (região viva). */
@@ -272,6 +369,7 @@
     el.textContent = ''; setTimeout(() => { el.textContent = msg; }, 30);
   }
 
-  window.VultoShop = { CONFIG, D, now, isListed, isPurchasable, listedProducts, productBySlug, productById, variantOf, totalStock,
-    money, dateBR, dropLabel, esc, colorName, colorHex, cart, renderGarment, productImages, imageHTML, card, mountChrome, announce, catById, dropById };
+  window.VultoShop = { CONFIG, D, V, INTEGRATIONS, now, isListed, isPurchasable, listedProducts, teaserProducts, productBySlug, productById, variantOf, totalStock,
+    money, dateBR, dropLabel, esc, colorName, colorHex, cart, saved, viewed, saveButton, statusFlag, nextDropHTML, dropWeekNote,
+    renderGarment, productImages, imageHTML, card, mountChrome, announce, catById, dropById };
 })();

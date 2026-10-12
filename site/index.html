@@ -335,6 +335,35 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
   .bigno{top:10px}
 }
 
+/* próximo drop, app, comunidade e confiança */
+.nextdrop{margin-top:30px;padding-top:22px;border-top:1px solid var(--line)}
+.nd-k{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--text-secondary);margin:0}
+.nd-k i{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:breathe 2.6s var(--ease-io) infinite}
+.nd-when{font-family:var(--display);font-weight:400;font-size:clamp(28px,3vw,42px);line-height:1.04;margin:10px 0 0}
+.nd-clock{display:flex;align-items:baseline;gap:10px;margin-top:14px;font-family:var(--mono);font-size:clamp(24px,2.6vw,34px);font-variant-numeric:tabular-nums}
+.nd-clock .u small{font-size:.4em;letter-spacing:.12em;color:var(--text-secondary);margin-left:3px}
+.nd-clock .sep{color:var(--line-strong)}
+.nd-txt{margin:10px 0 0;color:var(--text-secondary);font-size:15px;max-width:40ch}
+.nd-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-top:20px}
+.nd-link{background:none;border:0;padding:0;font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-primary);text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--line-strong);cursor:pointer}
+.nd-link:hover{text-decoration-color:var(--accent)}
+.drop-foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:14px 30px;margin-top:26px;padding-top:22px;border-top:1px solid var(--line);color:var(--text-secondary);font-size:15px}
+.drop-foot p{margin:0;max-width:52ch}
+.appcta{margin-top:34px;padding:22px 24px 24px;border:1px solid var(--line);border-radius:18px;background:rgba(15,15,14,.5)}
+.appcta .t{margin:8px 0 0;font-size:20px;font-weight:700}
+.ugc-wrap{margin-top:56px}
+.ugc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ugc a{position:relative;display:block;aspect-ratio:4/5;border-radius:14px;overflow:hidden;background:var(--panel)}
+.ugc img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease-out)}
+.ugc a:hover img{transform:scale(1.04)}
+.ugc span{position:absolute;left:10px;bottom:10px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;background:rgba(10,10,10,.62);padding:5px 8px;border-radius:6px}
+.interests{border:0;margin:0;padding:0;min-width:0}
+.interests legend{padding:0;margin-bottom:7px;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-secondary)}
+.consent{grid-column:1/-1;display:flex;gap:10px;align-items:flex-start;font-family:var(--body);font-size:14px;letter-spacing:0;text-transform:none;color:var(--text-secondary);cursor:pointer}
+.consent input{width:18px;height:18px;flex:none;margin:2px 0 0;padding:0;accent-color:#e9e6dd}
+.success .nd-row{justify-content:center;margin-top:16px}
+@media (max-width:720px){.ugc{grid-template-columns:repeat(2,minmax(0,1fr))}.appcta{padding:18px}}
+
 /* movimento reduzido: tudo no estado final */
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -405,7 +434,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
 
     <div class="band center settle fx-rise" data-a="0.86" data-b="1" data-seed="41" data-ramp="0.06" style="--sa:.5">
       <p class="kicker">VULTO® · PRÓXIMO DROP</p>
-      <h2 data-split="words">Próximo drop: data a anunciar</h2>
+      <h2 data-split="words" id="settle-t">Próximo drop: data a anunciar</h2>
       <div class="gap" aria-hidden="true"></div>
       <p class="sub">Entra na lista e a gente te avisa pelo app.</p>
       <div class="row"><a class="btn" href="#entrar">Entrar na lista de espera</a><a class="btn ghost" href="#drop">Ver a prévia</a></div>
@@ -422,7 +451,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
     <div class="in">
       <p class="kicker">VULTO · PRÓXIMO DROP</p>
       <h1>Quem viu, viu.</h1>
-      <p>Próximo drop: data a anunciar. Abre quinta, às 19h, no app. Entra na lista e a gente te avisa.</p>
+      <p id="static-p">Próximo drop: data a anunciar. Abre quinta, às 19h, no app. Entra na lista e a gente te avisa.</p>
       <div class="row"><a class="btn" href="#entrar">Entrar na lista</a><a class="btn ghost" href="#drop">Ver a prévia</a></div>
     </div>
   </div>
@@ -438,7 +467,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
         <p class="sec-kicker r"><span class="dot" aria-hidden="true"></span>PRÉVIA</p>
         <h2 class="h-sec r" id="drop-t">Três peças para mostrar o clima.</h2>
       </div>
-      <p class="lede r">As imagens são ilustrativas. As peças de verdade aparecem no app.</p>
+      <div class="r">
+        <p class="lede">As imagens são ilustrativas. As peças de verdade aparecem no app.</p>
+        <div class="nextdrop" id="nextdrop">
+          <p class="nd-k">Next drop</p>
+          <p class="nd-when">Data a anunciar</p>
+          <p class="nd-txt">Os drops abrem às quintas, 19h, só no app. Entra na lista e a gente te avisa.</p>
+          <div class="nd-row"><a class="btn" href="#entrar">Ativar lembrete</a></div>
+        </div>
+      </div>
     </div>
     <div class="pieces reveal">
       <article class="piece main r">
@@ -454,6 +491,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
         <div class="info"><h3>Jeans lavagem clara</h3><span class="price">Conceito</span><p>Jeans de lavagem clara com desgaste.</p></div>
       </article>
     </div>
+    <div class="drop-foot reveal"><p class="r">Perdeu um drop? As peças de drops que já aconteceram ficam no shop do site enquanto houver estoque.</p><p class="r"><a class="btn ghost" href="/shop">Ver o shop</a></p></div>
   </div>
 </section>
 
@@ -469,6 +507,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
         <li class="step"><span class="n">02</span><div><h3>Confirma presença.</h3><p>Faz o RSVP no app e liga as notificações.</p></div></li>
         <li class="step"><span class="n">03</span><div><h3>Chegou a hora.</h3><p>O drop abre no app. Nas lojas, a fila do dia é por senha, que você pega no app.</p></div></li>
       </ol>
+      <div class="appcta r">
+        <p class="nd-k">The drop happens in the app</p>
+        <p class="t">Prepare-se para o próximo lançamento.</p>
+        <p class="nd-txt">RSVP, aviso na hora do drop e senha da fila das lojas: tudo acontece no app.</p>
+        <div class="nd-row" id="app-btns"><a class="btn ghost" href="#entrar">Entrar na lista</a></div>
+      </div>
     </div>
     <div class="portal">
       <button class="hold" id="hold" type="button" aria-describedby="hold-note">
@@ -490,9 +534,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
         <p class="sec-kicker r"><span class="dot" aria-hidden="true"></span>A RUA</p>
         <h2 class="h-sec r" id="rua-t">Do digital para a calçada.</h2>
         <p class="lede r">A Vulto nasceu na internet em 2016 e ganhou a rua em 2020.</p>
+        <div class="count r"><b>14</b><span>drops<br>por ano</span><b>3</b><span>collabs<br>por ano</span></div>
         <p class="r" style="margin-top:30px"><a class="btn" href="#entrar">Entrar na lista</a></p>
       </div>
     </div>
+    <div class="ugc-wrap" id="ugc" hidden></div>
   </div>
 </section>
 
@@ -510,6 +556,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
       <div class="store r"><h3>11</h3><p>em shoppings</p></div>
       <div class="store r"><h3>14</h3><p>de rua</p></div>
     </div>
+    <p class="note r">12 delas fazem ship from store: parte dos pedidos do site sai direto do estoque de uma loja.</p>
   </div>
 </section>
 
@@ -522,10 +569,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
       <h2 class="h-sec r" id="faq-t">O que todo mundo pergunta.</h2>
     </div>
     <div class="faq">
-      <details><summary>Quando é o próximo drop?<span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>A data ainda vai ser anunciada. Quem está na lista fica sabendo pelo app.</p></div></details>
+      <details><summary>Quando é o próximo drop?<span class="pm" aria-hidden="true"></span></summary><div class="ans"><p id="faq-when">A data ainda vai ser anunciada. Quem está na lista fica sabendo pelo app.</p></div></details>
       <details><summary>Estar na lista garante peça?<span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>Não. Garante que você não perde o aviso.</p></div></details>
       <details><summary>A Vulto faz collab?<span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>Faz. São três collabs por ano, além dos drops da casa.</p></div></details>
-      <details><summary>A entrega demora?<span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>Em semana de drop sai muito pedido de uma vez, então o prazo pode ser maior que o normal.</p></div></details>
+      <details><summary>Dá para comprar fora do drop?<span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>Dá. Peças de drops que já aconteceram ficam no <a href="/shop">shop do site</a> enquanto houver estoque. Lançamento novo é só no app.</p></div></details>
+      <details><summary>A entrega demora?<span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>Em semana de drop sai muito pedido de uma vez, então o prazo pode ser maior que o normal. O prazo para o seu CEP aparece antes de pagar.</p></div></details>
+      <details><summary>Posso devolver?<span class="pm" aria-hidden="true"></span></summary><div class="ans"><p>Pode. Compras feitas pela internet podem ser devolvidas em até 7 dias depois do recebimento, pelo Código de Defesa do Consumidor.</p></div></details>
     </div>
   </div>
 </section>
@@ -535,15 +584,22 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
     <svg class="bigring" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-width="5" filter="url(#rough)" stroke-dasharray="380 30 40 20"/></svg>
     <p class="sec-kicker r" style="justify-content:center"><span class="dot" aria-hidden="true"></span>LISTA DE ESPERA</p>
     <h2 class="h-sec r" id="entrar-t">Não perde o próximo.</h2>
+    <p class="clock r" id="clock">Próximo drop: <b>data a anunciar</b> · abre quinta, 19h, no app</p>
     <form id="form" class="r" novalidate>
       <div class="field"><label for="f-nome">Nome</label><input id="f-nome" name="nome" type="text" placeholder="Como te chamam" autocomplete="given-name" required></div>
       <div class="field"><label for="f-email">E-mail</label><input id="f-email" name="email" type="email" placeholder="voce@email.com" autocomplete="email" required></div>
       <div class="field full"><label for="f-cidade">Cidade</label><input id="f-cidade" name="cidade" type="text" placeholder="Onde você mora" autocomplete="address-level2"></div>
+      <fieldset class="field full interests"><legend>Me avise sobre</legend><div class="sizes">
+        <label><input type="checkbox" name="avisos" value="drops" checked><span>Drops</span></label>
+        <label><input type="checkbox" name="avisos" value="collabs"><span>Collabs</span></label>
+        <label><input type="checkbox" name="avisos" value="reposicoes"><span>Reposições confirmadas</span></label>
+      </div></fieldset>
+      <label class="consent"><input type="checkbox" name="consentimento" required><span>Aceito receber estes avisos da Vulto por e-mail. Dá para sair quando quiser.</span></label>
       <button class="btn" type="submit">Entrar na lista de espera</button>
       <p class="fine">Demonstração: nenhum dado sai do seu navegador.</p>
       <div class="success" role="status" aria-live="polite">
         <div><svg viewBox="0 0 80 80" aria-hidden="true"><circle pathLength="1" cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" filter="url(#rough)" transform="rotate(-90 40 40)"/></svg>
-        <h3>Você está na lista.</h3><p>Agora é ficar de olho no app.</p></div>
+        <h3>Você está na lista.</h3><p>Agora é ficar de olho no app.</p><div class="nd-row" id="success-row"></div></div>
       </div>
     </form>
   </div>
@@ -556,12 +612,54 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
     <div class="foot">
       <div><a class="logo" href="#top" aria-label="Vulto, voltar ao topo"><svg aria-hidden="true" fill="currentColor"><use href="#vulto-logo"/></svg></a><p>Vulto · streetwear desde 2016</p></div>
       <div><h4>Navegue</h4><ul><li><a href="#drop">O drop</a></li><li><a href="#lista">Como funciona</a></li><li><a href="#lojas">Lojas</a></li><li><a href="#perguntas">Perguntas</a></li><li><a href="/shop">Shop</a></li></ul></div>
-      <div><h4>Lista de espera</h4><ul><li><a href="#entrar">Entrar na lista</a></li></ul></div>
+      <div><h4>Lista de espera</h4><ul id="foot-links"><li><a href="#entrar">Entrar na lista</a></li><li><a href="/shop?salvos=1">Peças salvas</a></li></ul></div>
     </div>
     <p class="disclaimer">Prévia feita para o case Vulto. Peças, imagens e vídeo são ilustrativos e gerados por IA.</p>
   </div>
 </footer>
 
+<script src="/static/vulto.js"></script>
+<script>
+/* ---------- próximo drop, app e comunidade ----------
+   Roda antes do filme: com drop confirmado, os textos do hero já saem com a data.
+   Sem drop confirmado, fica o HTML estático ("data a anunciar"). */
+(() => {
+  'use strict';
+  const V = window.VULTO; if (!V) return;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const next = V.nextDrop(), open = !next && V.justOpened();
+  const app = V.appButtons(next ? 'drop/' + next.id : '', 'btn', 'btn ghost');
+  // O lembrete leva ao app quando há link oficial; sem ele, à lista de espera.
+  const remind = app || '<a class="btn" href="#entrar">Ativar lembrete</a>';
+
+  if (next) {
+    const when = V.whenShort(next);
+    $('nextdrop').innerHTML = `<p class="nd-k"><i aria-hidden="true"></i>Next drop · ${esc(V.dropLabel(next))}</p>
+      <p class="nd-when">${esc(V.whenLabel(next))}</p>${V.clockHTML(next)}
+      <div class="nd-row">${remind}<button class="nd-link" type="button" data-ics="${next.id}">Adicionar à agenda</button></div>`;
+    $('settle-t').textContent = `Próximo drop: ${when}`;
+    $('static-p').textContent = `Próximo drop: ${when}, no app. Entra na lista e a gente te avisa.`;
+    $('faq-when').textContent = `O ${V.dropLabel(next)} abre ${when}, no app. Quem está na lista recebe o aviso pelo app.`;
+    $('clock').innerHTML = `<b>${esc(V.dropLabel(next))}</b> · abre ${esc(when)}, no app`;
+    $('success-row').innerHTML = `<button class="nd-link" type="button" data-ics="${next.id}">Adicionar o drop à agenda</button>`;
+  } else if (open) {
+    $('nextdrop').innerHTML = `<p class="nd-k"><i aria-hidden="true"></i>${esc(V.dropLabel(open))}</p><p class="nd-when">Aberto agora no app</p>
+      <p class="nd-txt">Abriu hoje, às 19h. O drop acontece só no app.</p>${app ? `<div class="nd-row">${app}</div>` : ''}`;
+  }
+  if (app) $('app-btns').innerHTML = app;
+
+  const ugc = V.community().slice(0, 8);
+  if (ugc.length) {
+    $('ugc').innerHTML = `<p class="sec-kicker"><span class="dot" aria-hidden="true"></span>WORN BY THE COMMUNITY</p><div class="ugc">${ugc.map(c =>
+      `<a href="/shop/${encodeURIComponent(c.product)}"><img src="${esc(c.src)}" alt="${esc(c.alt || '')}" loading="lazy" decoding="async"><span>${esc(c.author || '')}</span></a>`).join('')}</div>`;
+    $('ugc').hidden = false;
+  }
+  const extra = [V.links.tracking && ['Rastrear pedido', V.links.tracking], V.links.support && ['Atendimento', V.links.support]].filter(Boolean);
+  extra.forEach(([t, h]) => $('foot-links').insertAdjacentHTML('beforeend', `<li><a href="${esc(h)}" rel="noopener">${t}</a></li>`));
+  V.startClocks();
+})();
+</script>
 <script>
 (() => {
   'use strict';

@@ -1,8 +1,9 @@
-/* VULTO SHOP · página de produto: galeria, zoom, variantes, estoque e carrinho. */
+/* VULTO SHOP · página de produto: galeria, zoom, variantes, estoque, carrinho,
+   modelagem, prazo por CEP, história do drop e recomendações. */
 (() => {
   'use strict';
   const S = window.VultoShop;
-  const { D, esc, money } = S;
+  const { D, V, esc, money } = S;
   S.mountChrome('shop');
 
   const $ = id => document.getElementById(id);
@@ -12,8 +13,8 @@
   if (!slug || slug === 'produto.html') slug = new URLSearchParams(location.search).get('slug') || '';
   const p = S.productBySlug(slug);
 
-  /* Fora do shop (inexistente, rascunho, venda desligada ou drop que ainda não aconteceu):
-     a página não revela nada sobre a peça. */
+  /* Fora do shop (inexistente, rascunho, venda desligada ou drop que ainda não aconteceu
+     e não está em semana de teasers confirmada): a página não revela nada sobre a peça. */
   if (!p) {
     document.title = 'Peça fora do shop · Vulto';
     root.innerHTML = `<section class="s-error"><p class="mono" style="color:var(--text-2)">Shop</p>
@@ -32,6 +33,50 @@
   };
   if (p.sizes.length === 1) state.size = p.sizes[0];
   const guide = D.sizeGuides[p.garment];
+  const fit = D.fits[p.fit];
+  const soon = p.comingSoon;
+
+  /* ---------- status: disponibilidade real e canal de venda ---------- */
+  const flag = S.statusFlag(p);
+  const status = soon ? { chip: 'App exclusive', text: `Coming soon. Abre ${V.whenShort(p.drop)}, só no app.` }
+    : p.soldOut ? { chip: flag.text, text: p.dropSoldOut ? 'Todas as peças deste drop esgotaram.' : 'Esta peça esgotou no shop.' }
+    : { chip: flag && flag.cls === 'last' ? flag.text : 'Available', text: 'Peça de drop que já aconteceu, à venda no site enquanto houver estoque.' };
+
+  const fitHTML = fit ? `<p class="s-fit"><b class="mono">Fit: ${esc(fit.name)}</b> ${esc(fit.note)}</p>` : '';
+  const modelHTML = p.model ? `<p class="s-note" style="margin-top:6px">Na foto: ${String(p.model.height / 100).replace('.', ',')} m, vestindo ${esc(p.model.size)}.</p>` : '';
+  const guideBtn = guide ? '<button class="s-link" type="button" id="s-open-guide">Guia de medidas</button>' : '';
+
+  const buyHTML = soon ? `
+        <div class="s-teaser">
+          <p class="mono s-next-k"><i aria-hidden="true"></i>Abre no app</p>
+          <p class="s-next-when">${esc(V.whenLabel(p.drop))}</p>${V.clockHTML(p.drop)}
+          <div class="s-next-row">${V.appButtons(`peca/${p.slug}`, 's-btn', 's-btn ghost') || '<a class="s-btn" href="/#entrar">Ativar lembrete</a>'}
+            <button class="s-btn ghost" type="button" data-ics="${p.drop.id}">Adicionar à agenda</button>${S.saveButton(p, 's-save s-save-lg')}</div>
+          ${fitHTML}${guide ? `<p style="margin:12px 0 0">${guideBtn}</p>` : ''}
+          <p class="s-note">Esta peça não é vendida pelo site no lançamento. A lista de espera não reserva peça: garante que você recebe o aviso.</p>
+        </div>` : `
+        <div class="s-field" ${p.colors.length < 2 ? 'hidden' : ''}>
+          <div class="s-field-h"><span class="mono" id="s-color-l">Cor</span><strong id="s-color-name"></strong></div>
+          <div class="s-swatches" role="radiogroup" aria-labelledby="s-color-l" id="s-colors"></div>
+        </div>
+        <p class="s-note" ${p.colors.length > 1 ? 'hidden' : ''} style="margin-top:22px">Cor: ${esc(S.colorName(p.colors[0]))}</p>
+
+        <div class="s-field">
+          <div class="s-field-h"><span class="mono" id="s-size-l">Tamanho</span>${guideBtn}</div>
+          ${fitHTML}${modelHTML}
+          <div class="s-sizes" role="radiogroup" aria-labelledby="s-size-l" id="s-sizes"></div>
+          <p class="s-stock" id="s-stock" aria-live="polite"></p>
+        </div>
+
+        <div class="s-add"><button class="s-btn" type="button" id="s-add"></button>${S.saveButton(p, 's-save s-save-lg')}</div>
+        <p class="s-note">Colocar no carrinho não reserva a peça. O estoque é conferido de novo no checkout.</p>
+
+        <form class="s-ship" id="s-ship" novalidate>
+          <label class="mono" for="s-cep">Prazo de entrega</label>
+          <div><input id="s-cep" name="cep" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="Seu CEP" aria-describedby="s-ship-out"><button class="s-btn ghost" type="submit">Calcular</button></div>
+          <p class="s-ship-out" id="s-ship-out" aria-live="polite"></p>
+        </form>
+        ${S.dropWeekNote()}`;
 
   /* ---------- estrutura ---------- */
   root.innerHTML = `
@@ -42,40 +87,30 @@
         <div class="s-gnav" id="s-gnav" aria-hidden="true"></div>
       </div>
       <div class="s-buy">
-        <p class="s-drop mono">${esc(S.dropLabel(p.drop))} · ${S.dateBR(p.releaseDate)}</p>
+        <p class="s-drop mono">${esc(S.dropLabel(p.drop))} · ${soon ? 'abre' : 'lançado'} ${S.dateBR(p.releaseDate)}</p>
         <h1>${esc(p.name)}</h1>
         <span class="s-price">${money(p.price)}</span>
+        <p class="s-status"><span class="s-chip ${soon ? 'app' : p.soldOut ? 'out' : flag && flag.cls === 'last' ? 'last' : ''}">${esc(status.chip)}</span>${esc(status.text)}</p>
         <p class="s-desc">${esc(p.description)}</p>
+        ${buyHTML}
 
-        <div class="s-field" ${p.colors.length < 2 ? 'hidden' : ''}>
-          <div class="s-field-h"><span class="mono" id="s-color-l">Cor</span><strong id="s-color-name"></strong></div>
-          <div class="s-swatches" role="radiogroup" aria-labelledby="s-color-l" id="s-colors"></div>
-        </div>
-        <p class="s-note" ${p.colors.length > 1 ? 'hidden' : ''} style="margin-top:22px">Cor: ${esc(S.colorName(p.colors[0]))}</p>
-
-        <div class="s-field">
-          <div class="s-field-h"><span class="mono" id="s-size-l">Tamanho</span>${guide ? '<button class="s-link" type="button" id="s-open-guide">Guia de medidas</button>' : ''}</div>
-          <div class="s-sizes" role="radiogroup" aria-labelledby="s-size-l" id="s-sizes"></div>
-          <p class="s-stock" id="s-stock" aria-live="polite"></p>
-        </div>
-
-        <div class="s-add"><button class="s-btn" type="button" id="s-add"></button></div>
-        <p class="s-note">Colocar no carrinho não reserva a peça. O estoque é conferido de novo no checkout.</p>
+        ${p.drop.concept ? `<section class="s-story" aria-label="Sobre o drop"><p class="mono">Behind the drop · ${esc(S.dropLabel(p.drop))}</p><p>${esc(p.drop.concept)}</p></section>` : ''}
 
         <div class="s-acc">
           <details><summary>Entrega</summary><div class="in">
-            <p>O valor e o prazo do frete aparecem no checkout quando a integração com a transportadora estiver ativa. Nesta demonstração, ela não está conectada.</p>
+            <p>O valor e o prazo do frete aparecem antes de pagar, quando a integração com a transportadora estiver ativa. Nesta demonstração, ela não está conectada.</p>
+            <p>Das 25 lojas da Vulto, 12 fazem ship from store: parte dos pedidos do site sai direto do estoque de uma loja.</p>
             <p>Em semana de drop sai muito pedido de uma vez, então o prazo de entrega pode ser maior que o normal.</p></div></details>
           <details><summary>Trocas e devoluções</summary><div class="in">
             <p>Compras feitas pela internet podem ser devolvidas em até 7 dias depois do recebimento, pelo direito de arrependimento do Código de Defesa do Consumidor.</p>
             <p>As regras de troca de tamanho ainda precisam ser definidas pela Vulto e entram aqui.</p></div></details>
           <details><summary>Detalhes</summary><div class="in">
-            <p>${esc(p.categoryName)} · ${esc(S.dropLabel(p.drop))}</p>
-            <p>Lançada no app em ${S.dateBR(p.releaseDate)}.</p></div></details>
+            <p>${esc(p.categoryName)} · ${esc(S.dropLabel(p.drop))}${fit ? ` · Fit ${esc(fit.name.toLowerCase())}` : ''}</p>
+            <p>${soon ? `Abre no app em ${S.dateBR(p.releaseDate)}, às 19h.` : `Lançada no app em ${S.dateBR(p.releaseDate)}.`}</p></div></details>
         </div>
       </div>
     </div>
-    <section class="s-related" id="s-related" hidden><h2>Do mesmo universo</h2><div class="s-grid" id="s-related-grid"></div></section>`;
+    <div id="s-rails"></div>`;
 
   /* ---------- galeria ---------- */
   let images = [];
@@ -114,6 +149,52 @@
   stage.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); stage.classList.toggle('z'); } });
   stage.addEventListener('pointermove', e => { if (stage.classList.contains('z')) setOrigin(e); });
 
+  /* ---------- guia de medidas ---------- */
+  if (guide) {
+    const how = p.garment === 'pants' || p.garment === 'shorts'
+      ? 'Estenda uma calça sua que veste bem. Meça a cintura de ponta a ponta, o quadril na parte mais larga e o comprimento da cintura à barra. Compare com a tabela.'
+      : 'Estenda uma peça sua que veste bem. Meça a largura de axila a axila e o comprimento do ombro até a barra. Compare com a tabela.';
+    $('s-guide-body').innerHTML = `${fit ? `<p class="s-fit" style="margin:0 0 16px"><b class="mono">Fit: ${esc(fit.name)}</b> ${esc(fit.note)}</p>` : ''}
+      <table class="s-table"><thead><tr>${guide.cols.map(c => `<th scope="col">${esc(c)}</th>`).join('')}</tr></thead>
+      <tbody>${guide.rows.map(r => `<tr>${r.map((c, i) => i ? `<td>${c} cm</td>` : `<th scope="row">${esc(c)}</th>`).join('')}</tr>`).join('')}</tbody></table>
+      <p class="s-note" style="margin-top:14px"><b style="color:var(--text-2);font-weight:500">Como medir.</b> ${how}</p>
+      ${p.model ? `<p class="s-note">Na foto: ${String(p.model.height / 100).replace('.', ',')} m, vestindo ${esc(p.model.size)}.</p>` : ''}
+      <p class="s-note">Medidas da peça estendida, de referência. Dados demonstrativos.</p>`;
+    $('s-open-guide').addEventListener('click', () => $('s-guide').showModal());
+    $('s-guide').addEventListener('click', e => { if (e.target === $('s-guide') || e.target.closest('[data-close]')) $('s-guide').close(); });
+  }
+
+  /* ---------- recomendações ---------- */
+  // Complete the fit: peças de outro grupo (parte de cima, de baixo, acessório), do mesmo drop primeiro.
+  const GROUP = { camisetas: 'cima', moletons: 'cima', jaquetas: 'cima', calcas: 'baixo', bermudas: 'baixo', bones: 'acessorio', acessorios: 'acessorio' };
+  const listed = S.listedProducts().filter(x => x.id !== p.id);
+  const avail = listed.filter(x => !x.soldOut);
+  const complement = avail.filter(x => GROUP[x.category] !== GROUP[p.category])
+    .sort((a, b) => (b.dropId === p.dropId) - (a.dropId === p.dropId));
+  const fitPicks = [];
+  complement.forEach(x => { if (fitPicks.length < 4 && !fitPicks.some(y => y.category === x.category)) fitPicks.push(x); });
+  complement.forEach(x => { if (fitPicks.length < 4 && !fitPicks.includes(x)) fitPicks.push(x); });
+  const shown = new Set(fitPicks.map(x => x.id));
+  const sameDrop = (soon ? S.teaserProducts().filter(x => x.id !== p.id) : listed.filter(x => x.dropId === p.dropId && !shown.has(x.id)))
+    .sort((a, b) => a.soldOut - b.soldOut).slice(0, 4);
+  sameDrop.forEach(x => shown.add(x.id));
+  const similar = fitPicks.length + sameDrop.length < 4 ? avail.filter(x => !shown.has(x.id) && x.category === p.category).slice(0, 4) : [];
+  similar.forEach(x => shown.add(x.id));
+  const seen = S.viewed.products(p.id).filter(x => !shown.has(x.id)).slice(0, 4);
+  const ugc = V.community(p.slug);
+
+  const rail = (title, list) => list.length ? `<section class="s-related"><h2>${title}</h2><div class="s-grid">${list.map(x => S.card(x, 'h3')).join('')}</div></section>` : '';
+  $('s-rails').innerHTML =
+    (ugc.length ? `<section class="s-related"><h2>Vulto in real life</h2><div class="s-ugc">${ugc.map(c =>
+      `<figure><img src="${esc(c.src)}" alt="${esc(c.alt || '')}" loading="lazy" decoding="async"><figcaption class="mono">${esc(c.author || '')}</figcaption></figure>`).join('')}</div></section>` : '') +
+    rail('Complete the fit', fitPicks) +
+    rail(`Mais do ${esc(S.dropLabel(p.drop))}`, sameDrop) +
+    rail('Você também pode curtir', similar) +
+    rail('Vistos por você', seen);
+  S.viewed.add(p.id);
+
+  if (soon) { paintGallery(); V.startClocks(); return; }
+
   /* ---------- variantes ---------- */
   function stockOf(size) { const v = S.variantOf(p, state.color, size); return v ? v.stock : 0; }
   function paintColors() {
@@ -130,13 +211,15 @@
       return `<button class="s-size" type="button" role="radio" aria-checked="${on}" aria-disabled="${out}" data-s="${esc(s)}" tabindex="${on || (!state.size && s === p.sizes[0]) ? 0 : -1}" aria-label="${esc(s)}${out ? ', esgotado' : ''}">${esc(s)}</button>`;
     }).join('');
   }
+  // Quantidade só aparece quando é pouca, e é sempre a do estoque.
+  const stockText = n => n <= 0 ? 'esgotado' : n === 1 ? 'última unidade' : n <= S.CONFIG.lowStock ? `restam ${n}` : 'disponível';
   function paintStock(msg, err) {
     const el = $('s-stock'); const btn = $('s-add');
     el.classList.toggle('err', !!err);
     if (p.soldOut) { el.textContent = 'Esta peça esgotou e não pode ser comprada.'; btn.textContent = 'Sold out'; btn.disabled = true; return; }
     if (msg) { el.textContent = msg; }
-    else if (!state.size) el.textContent = '';
-    else el.textContent = stockOf(state.size) > 0 ? `${S.colorName(state.color)}, tamanho ${state.size}: disponível` : `${S.colorName(state.color)}, tamanho ${state.size}: esgotado`;
+    else if (!state.size) el.textContent = p.lastSize ? `Só sobrou o tamanho ${p.lastSize}.` : '';
+    else el.textContent = `${S.colorName(state.color)}, tamanho ${state.size}: ${stockText(stockOf(state.size))}`;
     const ok = state.size && stockOf(state.size) > 0;
     btn.disabled = false; btn.setAttribute('aria-disabled', String(!ok));
     btn.textContent = ok ? `Adicionar ao carrinho · ${money(p.price)}` : state.size ? 'Esgotado neste tamanho' : 'Escolha um tamanho';
@@ -163,9 +246,27 @@
   radioKeys($('s-colors'), '.s-sw', pickColor);
   radioKeys($('s-sizes'), '.s-size', b => { if (b.getAttribute('aria-disabled') !== 'true') pickSize(b); });
 
+  /* ---------- prazo por CEP (usa a mesma integração do checkout) ---------- */
+  const CEP_KEY = 'vulto-cep';
+  const cepIn = $('s-cep');
+  try { cepIn.value = sessionStorage.getItem(CEP_KEY) || ''; } catch { /* sem armazenamento */ }
+  cepIn.addEventListener('input', () => { const d = cepIn.value.replace(/\D/g, '').slice(0, 8); cepIn.value = d.length > 5 ? d.slice(0, 5) + '-' + d.slice(5) : d; });
+  $('s-ship').addEventListener('submit', async e => {
+    e.preventDefault();
+    const out = $('s-ship-out');
+    if (!/^\d{5}-\d{3}$/.test(cepIn.value)) { out.textContent = 'Digite o CEP com 8 números.'; out.classList.add('err'); cepIn.focus(); return; }
+    out.classList.remove('err');
+    try { sessionStorage.setItem(CEP_KEY, cepIn.value); } catch { /* sem armazenamento */ }
+    const r = await S.INTEGRATIONS.quoteShipping(cepIn.value, [{ product: p, color: state.color, size: state.size, qty: 1 }]);
+    out.innerHTML = r.available && r.options?.length
+      ? r.options.map(o => `${esc(o.name)}: ${money(o.price)} · ${o.days} ${o.days === 1 ? 'dia útil' : 'dias úteis'}`).join('<br>')
+      : `CEP ${esc(cepIn.value)} guardado para o checkout. A cotação da transportadora não está conectada nesta demonstração: com ela ligada, prazo e valor aparecem aqui.`;
+  });
+
   /* ---------- carrinho ---------- */
   const mini = $('s-mini');
   mini.addEventListener('click', e => { if (e.target === mini || e.target.closest('[data-close]')) mini.close(); });
+  const thumbOf = (x, color) => { const im = S.productImages(x, color)[0]; return im.kind === 'photo' ? `<img src="${esc(im.src)}" alt="">` : im.html.replace('<svg class="g-svg"', '<svg class="g-svg" aria-hidden="true"').replace(/<title>.*?<\/title>/, ''); };
   $('s-add').addEventListener('click', () => {
     if (p.soldOut) return;
     if (!state.size) { paintStock('Escolha um tamanho antes de adicionar.', true); $('s-sizes').querySelector('.s-size:not([aria-disabled="true"])')?.focus(); return; }
@@ -176,28 +277,15 @@
     btn.textContent = 'Adicionado ✓';
     setTimeout(() => paintStock(), 1600);
     S.announce(`${p.name}, ${S.colorName(state.color)}, tamanho ${state.size}, adicionado ao carrinho.`);
-    const im = images[0];
-    $('s-mini-body').innerHTML = `<div class="s-line" style="grid-template-columns:84px 1fr"><div class="s-thumb">${im.kind === 'photo' ? `<img src="${esc(im.src)}" alt="">` : im.html.replace('<svg class="g-svg"', '<svg class="g-svg" aria-hidden="true"')}</div>
+    const inCart = new Set(S.cart.lines().map(l => l.productId));
+    const pair = fitPicks.filter(x => !inCart.has(x.id)).slice(0, 2);
+    $('s-mini-body').innerHTML = `<div class="s-line" style="grid-template-columns:84px 1fr"><div class="s-thumb">${thumbOf(p, state.color)}</div>
       <div><h3>${esc(p.name)}</h3><p>${esc(S.colorName(state.color))} · ${esc(state.size)}</p><p class="s-price" style="margin-top:8px">${money(p.price)}</p></div></div>
       <div class="s-row" style="margin-top:10px"><span>Itens no carrinho</span><span>${S.cart.count()}</span></div>
-      <div class="s-row"><span>Subtotal</span><span>${money(S.cart.subtotal())}</span></div>`;
+      <div class="s-row"><span>Subtotal</span><span>${money(S.cart.subtotal())}</span></div>
+      ${pair.length ? `<p class="mono" style="color:var(--text-2);margin:22px 0 4px">Complete the fit</p>${pair.map(x => `<a class="s-line s-pair" href="/shop/${x.slug}"><div class="s-thumb">${thumbOf(x)}</div><div><h3>${esc(x.name)}</h3><p>${esc(S.dropLabel(x.drop))}</p></div><span class="s-price">${money(x.price)}</span></a>`).join('')}` : ''}`;
     mini.showModal();
   });
-
-  /* ---------- guia de medidas ---------- */
-  if (guide) {
-    $('s-guide-body').innerHTML = `<table class="s-table"><thead><tr>${guide.cols.map(c => `<th scope="col">${esc(c)}</th>`).join('')}</tr></thead>
-      <tbody>${guide.rows.map(r => `<tr>${r.map((c, i) => i ? `<td>${c} cm</td>` : `<th scope="row">${esc(c)}</th>`).join('')}</tr>`).join('')}</tbody></table>
-      <p class="s-note" style="margin-top:14px">Medidas da peça estendida, de referência. Dados demonstrativos.</p>`;
-    $('s-open-guide').addEventListener('click', () => $('s-guide').showModal());
-    $('s-guide').addEventListener('click', e => { if (e.target === $('s-guide') || e.target.closest('[data-close]')) $('s-guide').close(); });
-  }
-
-  /* ---------- relacionados ---------- */
-  const others = S.listedProducts().filter(x => x.id !== p.id);
-  const related = [...others.filter(x => x.category === p.category), ...others.filter(x => x.category !== p.category && x.dropId === p.dropId), ...others]
-    .filter((x, i, a) => a.findIndex(y => y.id === x.id) === i).sort((a, b) => a.soldOut - b.soldOut).slice(0, 4);
-  if (related.length) { $('s-related-grid').innerHTML = related.map(x => S.card(x, 'h3')).join(''); $('s-related').hidden = false; }
 
   paintGallery(); repaint();
 })();

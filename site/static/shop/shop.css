@@ -284,3 +284,88 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 @keyframes slideup{from{transform:translateY(30px);opacity:0}}
 @media (pointer:coarse){.s-cats a,.s-tool{min-height:44px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- conversão: etiquetas, salvos, próximo drop, modelagem, prazo ---------- */
+/* etiquetas editoriais: uma por cartão, sempre de dado real */
+.s-flag.last{background:var(--canvas);box-shadow:inset 0 0 0 1px var(--text)}
+.s-flag.app{background:var(--accent);color:var(--ink)}
+.s-cell{position:relative;min-width:0}
+.s-dl{grid-column:1/-1;order:-1;margin-bottom:3px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)}
+.s-save{position:absolute;top:8px;right:8px;z-index:3;width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:50%;background:rgba(15,15,14,.62);color:var(--text);padding:0;transition:background .25s var(--ease)}
+.s-save svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round;transition:fill .2s var(--ease)}
+.s-save[aria-pressed="true"] svg{fill:currentColor}
+.s-save:hover{background:rgba(15,15,14,.9)}
+.s-save span{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.s-save.s-save-lg{position:static;width:48px;height:48px;border-radius:0;border:1px solid var(--line-2);background:none;flex:none}
+.s-save.s-save-lg:hover{border-color:var(--text)}
+.s-add{display:flex;gap:8px}
+.s-add .s-btn{flex:1;width:auto}
+
+/* próximo drop (topo do shop e peça em teaser) */
+#s-next-slot{flex:none;min-width:0}
+.s-next{border-left:1px solid var(--line);padding-left:22px;max-width:360px}
+.s-next .s-next-k,.s-teaser .s-next-k{display:flex;align-items:center;gap:8px;margin:0;color:var(--text-2)}
+.s-next-k i{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2.4s ease-in-out infinite}
+.s-next .s-next-when,.s-teaser .s-next-when{margin:8px 0 0;max-width:none;font-family:var(--display);font-size:clamp(20px,2vw,26px);line-height:1.1;color:var(--text)}
+.s-next.is-quiet .s-next-when{font-size:18px}
+.s-next-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:14px}
+.s-next .s-btn{min-height:42px;padding:0 16px;font-size:12px}
+.s-next .s-note{margin:8px 0 0;font-size:12px;color:var(--text-3)}
+.nd-clock{display:flex;align-items:baseline;gap:8px;margin-top:10px;font-family:var(--mono);font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.nd-clock .u small{margin-left:2px;font-size:11px;color:var(--text-2)}
+.nd-clock .sep{color:var(--text-3)}
+.s-teasers{padding:4px 0 0;border-top:1px solid var(--line)}
+.s-teasers h2{margin:22px var(--gut) 0;font-weight:500;color:var(--text-2)}
+.s-teasers .s-grid{padding-bottom:36px}
+.s-teaser{margin-top:24px;border-top:1px solid var(--line);padding-top:20px}
+.s-teaser .s-next-row .s-btn{flex:1 1 auto}
+
+/* página de produto */
+.s-status{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:14px 0 0;font-size:13px;color:var(--text-2)}
+.s-chip{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:4px 7px;border:1px solid var(--line-2);color:var(--text)}
+.s-chip.out{background:var(--text);color:var(--ink);border-color:var(--text)}
+.s-chip.last{border-color:var(--text)}
+.s-chip.app{background:var(--accent);color:var(--ink);border-color:var(--accent)}
+.s-fit{margin:0 0 12px;font-size:13px;color:var(--text-2)}
+.s-fit b{display:inline-block;margin-right:6px;color:var(--text);font-weight:500;font-size:11px}
+.s-ship{margin-top:22px;border-top:1px solid var(--line);padding-top:18px}
+.s-ship label{display:block;color:var(--text-2);margin-bottom:10px}
+.s-ship div{display:flex;gap:8px}
+.s-ship input{flex:1;min-width:0;min-height:44px;background:transparent;border:1px solid var(--line-2);padding:0 12px;font-size:16px;border-radius:0}
+.s-ship input:focus{outline:none;border-color:var(--text)}
+.s-ship .s-btn{min-height:44px;padding:0 16px}
+.s-ship-out{margin:10px 0 0;font-size:13px;color:var(--text-2);min-height:0}
+.s-ship-out:empty{display:none}
+.s-ship-out.err{color:var(--danger)}
+.s-notice{margin:14px 0 0;padding:12px 14px;border:1px solid var(--line-2);font-size:13px;color:var(--text-2)}
+.s-notice b{color:var(--text);font-weight:600}
+.s-story{margin-top:28px;padding:20px 0 2px;border-top:1px solid var(--line)}
+.s-story .mono{margin:0 0 10px;color:var(--text-2)}
+.s-story p:last-child{margin:0;font-size:15px;max-width:46ch}
+.s-ugc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:18px var(--gut) 60px}
+.s-ugc figure{margin:0;position:relative;aspect-ratio:4/5;background:var(--tile);overflow:hidden}
+.s-ugc img{width:100%;height:100%;object-fit:cover}
+.s-ugc figcaption{position:absolute;left:8px;bottom:8px;background:rgba(15,15,14,.8);padding:4px 7px;font-size:10px}
+.s-pair{grid-template-columns:64px 1fr auto;padding:12px 0}
+.s-pair:hover h3{text-decoration:underline;text-underline-offset:3px}
+
+/* garantias: uma linha discreta, sem selos */
+.s-assure{list-style:none;margin:16px 0 0;padding:14px 0 0;border-top:1px solid var(--line);display:grid;gap:6px;font-size:12px;color:var(--text-2)}
+.s-assure li::before,.s-trust li::before{content:"—";margin-right:8px;color:var(--text-3)}
+.s-trust{list-style:none;margin:26px 0 0;display:flex;flex-wrap:wrap;gap:6px 22px;font-size:12px;color:var(--text-2)}
+.s-mobsum{display:none;border:1px solid var(--line-2);padding:0 14px;margin:0 0 18px}
+.s-mobsum summary{list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:48px;cursor:pointer;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.s-mobsum summary::-webkit-details-marker{display:none}
+.s-mobsum[open]{padding-bottom:12px}
+
+@media (max-width:900px){
+  .s-mobsum{display:block}
+  .s-ugc{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:720px){
+  .s-next{border-left:0;border-top:1px solid var(--line);padding:16px 0 0;max-width:none}
+  #s-next-slot{width:100%}
+  .s-save{width:32px;height:32px;top:6px;right:6px}
+  .s-dl{font-size:9px}
+  .nd-clock{font-size:20px}
+}

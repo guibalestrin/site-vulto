@@ -11,16 +11,21 @@
    cor está escolhida. Entradas { type: 'svg' } são
    ilustrações temporárias desenhadas em código (core.js · renderGarment)
    e devem ser substituídas por fotos quando existirem.
+
+   O calendário dos drops vem de /static/vulto.js (fonte única com a Home).
+
+   Campos opcionais de produto. Só preencha com informação verificada; vazio,
+   o site simplesmente não mostra nada:
+     fit: 'oversized' | 'regular' | 'boxy' | 'reto'   (ficha técnica)
+     model: { height: 182, size: 'G' }                 (quem vestiu na foto)
+     highlight: 'mais-visto-do-drop' | 'em-alta' | 'mais-salvo-semana'
+                (vem do analytics; nunca à mão)
+     noRestock: true   (só quando a Vulto confirmou que não haverá reposição)
+     teaser: true      (pode aparecer como "em breve" na semana de teasers de
+                        um drop confirmado; nunca é vendida pelo site)
    ========================================================================= */
 window.VULTO_DATA = (() => {
-  // Drops abrem na quinta-feira, às 19h, horário de Brasília.
-  const drops = [
-    { id: 'drop-10', number: 10, name: 'Asfalto',  launchAt: '2026-07-02T19:00:00-03:00' },
-    { id: 'drop-11', number: 11, name: 'Concreto', launchAt: '2026-08-06T19:00:00-03:00' },
-    { id: 'drop-12', number: 12, name: 'Garoa',    launchAt: '2026-09-03T19:00:00-03:00' },
-    { id: 'drop-13', number: 13, name: 'Tinta',    launchAt: '2026-10-01T19:00:00-03:00' },
-    { id: 'drop-14', number: 14, name: 'Portal',   launchAt: '2026-10-29T19:00:00-03:00' } // futuro: não pode aparecer no shop antes da data
-  ];
+  const drops = window.VULTO.drops;
 
   const categories = [
     { id: 'camisetas',  name: 'Camisetas' },
@@ -62,7 +67,7 @@ window.VULTO_DATA = (() => {
     // ---------- Drop 13 · Tinta ----------
     p({ id: 'vt-13-01', slug: 'camiseta-caveira-rachada', name: 'Camiseta Caveira Rachada', category: 'camisetas', dropId: 'drop-13', price: 189,
         description: 'Camiseta oversized de algodão pesado com caveira e VULTO em tinta branca com acabamento rachado.',
-        garment: 'tee', print: 'skull', sizes: TOPS, stock: { preto: [3, 8, 0, 5, 2] },
+        garment: 'tee', print: 'skull', fit: 'oversized', sizes: TOPS, stock: { preto: [3, 8, 0, 5, 2] },
         images: [
           { type: 'photo', src: '/assets/peca-camiseta.jpg', alt: 'Camiseta Caveira Rachada preta, vista de frente, sob um viaduto de concreto' },
           { type: 'photo', src: '/assets/hero-poster.jpg', alt: 'Camiseta Caveira Rachada preta, enquadramento aberto no concreto' }
@@ -75,7 +80,7 @@ window.VULTO_DATA = (() => {
         ] }),
     p({ id: 'vt-13-03', slug: 'calca-jeans-concreto', name: 'Calça Jeans Concreto', category: 'calcas', dropId: 'drop-13', price: 349,
         description: 'Jeans de corte reto, lavagem clara e desgaste nos joelhos.',
-        garment: 'pants', print: 'none', sizes: JEANS, stock: { azul: [1, 4, 6, 0, 2] },
+        garment: 'pants', print: 'none', fit: 'reto', sizes: JEANS, stock: { azul: [1, 4, 6, 0, 2] },
         images: [
           { type: 'photo', src: '/assets/peca-jeans.jpg', alt: 'Calça Jeans Concreto de lavagem clara pendurada em frente a um pilar de concreto' }
         ] }),
@@ -133,15 +138,16 @@ window.VULTO_DATA = (() => {
         garment: 'tee', print: 'logo', sizes: TOPS, stock: { preto: [5, 5, 5, 5, 5] },
         images: [{ type: 'svg', view: 'front' }] }),
 
-    // ---------- Drop 14 · Portal (futuro): cadastrado, mas fora do shop até o lançamento ----------
-    p({ id: 'vt-14-01', slug: 'camiseta-portal', name: 'Camiseta Portal', category: 'camisetas', dropId: 'drop-14', price: 189,
-        description: 'Produto de drop futuro. Só entra no shop depois do lançamento no app.',
+    // ---------- Drop 14 · Portal (futuro): fora do shop até o lançamento ----------
+    // teaser: true só tem efeito se o drop estiver confirmado em vulto.js, e só na semana de teasers.
+    p({ id: 'vt-14-01', slug: 'camiseta-portal', name: 'Camiseta Portal', category: 'camisetas', dropId: 'drop-14', price: 189, teaser: true,
+        description: 'Camiseta de algodão com o anel de tinta na frente.',
         garment: 'tee', print: 'ring', sizes: TOPS, stock: { preto: [10, 10, 10, 10, 10] },
-        images: [{ type: 'svg', view: 'front' }] }),
-    p({ id: 'vt-14-02', slug: 'moletom-portal', name: 'Moletom Portal', category: 'moletons', dropId: 'drop-14', price: 449,
-        description: 'Produto de drop futuro. Só entra no shop depois do lançamento no app.',
+        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'detail' }] }),
+    p({ id: 'vt-14-02', slug: 'moletom-portal', name: 'Moletom Portal', category: 'moletons', dropId: 'drop-14', price: 449, teaser: true,
+        description: 'Moletom de capuz com caveira em tinta branca.',
         garment: 'hoodie', print: 'skull', sizes: TOPS, stock: { preto: [6, 6, 6, 6, 6] },
-        images: [{ type: 'svg', view: 'front' }] })
+        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'back' }] })
   ];
 
   // Guia de medidas de referência (dados demonstrativos), em centímetros.
@@ -153,5 +159,13 @@ window.VULTO_DATA = (() => {
     shorts: { cols: ['Tamanho', 'Cintura', 'Quadril', 'Comprimento'], rows: [['38', 38, 52, 50], ['40', 40, 54, 51], ['42', 42, 56, 52], ['44', 44, 58, 53], ['46', 46, 60, 54]] }
   };
 
-  return { drops, categories, colors, products, sizeGuides };
+  // Modelagens: o texto que aparece junto do tamanho e no guia de medidas.
+  const fits = {
+    oversized: { name: 'Oversized', note: 'Modelagem ampla, ombro caído. Consulte as medidas antes de escolher.' },
+    boxy:      { name: 'Boxy',      note: 'Mais larga e mais curta que a regular. Confira o comprimento na tabela.' },
+    regular:   { name: 'Regular',   note: 'Veste no seu tamanho de sempre.' },
+    reto:      { name: 'Corte reto', note: 'Mesma largura do quadril à barra. Confira cintura e comprimento na tabela.' }
+  };
+
+  return { drops, categories, colors, products, sizeGuides, fits };
 })();

@@ -20,9 +20,12 @@
     <div>
       <p class="mono" style="color:var(--text-2);margin:0 0 12px" id="s-kicker" hidden><a href="/shop">Shop</a></p>
       <h1 id="s-title">Shop</h1>
-      <p>Peças de drops que já aconteceram, enquanto houver estoque.</p>
+      <p id="s-lede">Peças de drops que já aconteceram, enquanto houver estoque.</p>
     </div>
+    <div id="s-next-slot"></div>
   </div>
+
+  <section class="s-teasers" id="s-teasers" aria-label="Próximo drop" hidden></section>
 
   <div class="s-tools">
     <nav class="s-cats" aria-label="Categorias" id="s-cats"></nav>
@@ -52,6 +55,7 @@
 
 <footer id="shop-footer"></footer>
 
+<script src="/static/vulto.js"></script>
 <script src="/static/shop/data.js"></script>
 <script src="/static/shop/core.js"></script>
 <script src="/static/shop/catalog.js"></script>

@@ -17,9 +17,11 @@
   const m = location.pathname.match(/\/shop\/category\/([^/?#]+)/);
   const catId = decodeURIComponent(m ? m[1] : (new URLSearchParams(location.search).get('categoria') || ''));
   const category = catId ? S.catById[catId] : null;
+  // Salvos: a mesma grade, só com o que a pessoa guardou neste aparelho
+  const savedView = !category && new URLSearchParams(location.search).get('salvos') === '1';
 
   const all = S.listedProducts();
-  const base = category ? all.filter(p => p.category === category.id) : all;
+  const base = savedView ? S.saved.products() : category ? all.filter(p => p.category === category.id) : all;
 
   // estado a partir da URL, para filtros compartilháveis
   const params = new URLSearchParams(location.search);
@@ -37,11 +39,28 @@
     document.title = `${category.name} · Shop · Vulto`;
     $('s-title').textContent = category.name;
     $('s-kicker').hidden = false;
+  } else if (savedView) {
+    document.title = 'Salvos · Shop · Vulto';
+    $('s-title').textContent = 'Salvos';
+    $('s-kicker').hidden = false;
+    $('s-lede').textContent = 'As peças que você guardou neste aparelho.';
   }
   const catsWithItems = D.categories.filter(c => all.some(p => p.category === c.id));
-  $('s-cats').innerHTML = `<a href="/shop" ${!category ? 'aria-current="page"' : ''}>Tudo</a>` +
-    catsWithItems.map(c => `<a href="/shop/category/${c.id}" ${category && category.id === c.id ? 'aria-current="page"' : ''}>${esc(c.name)}</a>`).join('');
+  $('s-cats').innerHTML = `<a href="/shop" ${!category && !savedView ? 'aria-current="page"' : ''}>Tudo</a>` +
+    catsWithItems.map(c => `<a href="/shop/category/${c.id}" ${category && category.id === c.id ? 'aria-current="page"' : ''}>${esc(c.name)}</a>`).join('') +
+    `<a href="/shop?salvos=1" ${savedView ? 'aria-current="page"' : ''}>Salvos<span data-saved-count></span></a>`;
   $('s-sort').value = sort;
+
+  /* ---------- próximo drop e semana de teasers ---------- */
+  $('s-next-slot').innerHTML = S.nextDropHTML();
+  const teasers = !category && !savedView ? S.teaserProducts() : [];
+  if (teasers.length) {
+    const d = teasers[0].drop;
+    $('s-teasers').innerHTML = `<h2 class="mono">Coming soon · ${esc(S.dropLabel(d))} · só no app</h2>
+      <div class="s-grid">${teasers.map(p => S.card(p, 'h3')).join('')}</div>`;
+    $('s-teasers').hidden = false;
+  }
+  S.V.startClocks();
 
   /* ---------- regras de filtro ---------- */
   function sizeMatch(p) {
@@ -108,8 +127,8 @@
   function syncURL() {
     const q = new URLSearchParams();
     KEYS.forEach(k => { if (state[k].size) q.set(k, [...state[k]].join(',')); });
+    if (savedView) q.set('salvos', '1');
     if (sort !== 'recentes') q.set('ordem', sort);
-    const sim = new URLSearchParams(location.search).get('simular-data'); if (sim) q.set('simular-data', sim);
     const s = q.toString();
     history.replaceState(null, '', location.pathname + (s ? '?' + s : ''));
   }
@@ -131,6 +150,8 @@
       (n ? '<button class="s-link" type="button" data-clear-all style="margin-left:6px">Limpar tudo</button>' : '');
     if (catId && !category) {
       grid.innerHTML = `<div class="s-empty"><h2>Essa categoria não existe.</h2><p>Volte para o shop e escolha outra.</p><p><a class="s-btn ghost" href="/shop">Ver tudo</a></p></div>`;
+    } else if (savedView && !base.length) {
+      grid.innerHTML = `<div class="s-empty"><h2>Nada salvo ainda.</h2><p>Toque no marcador de uma peça para guardar aqui e voltar depois.</p><p><a class="s-btn ghost" href="/shop">Ver o shop</a></p></div>`;
     } else if (!base.length) {
       grid.innerHTML = `<div class="s-empty"><h2>Nada aqui por enquanto.</h2><p>As peças entram no shop depois que o drop acontece no app.</p><p><a class="s-btn ghost" href="/shop">Ver tudo</a></p></div>`;
     } else if (!list.length) {
