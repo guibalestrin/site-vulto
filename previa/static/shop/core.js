@@ -259,7 +259,7 @@
           <p>O shop vende peças de drops que já aconteceram. Lançamento novo abre só no app, quinta às 19h.</p>
           <ul><li><a href="/shop">Shop</a></li><li><a href="/cart">Carrinho</a></li><li><a href="/#entrar">Lista de espera</a></li></ul>
         </div>
-        <p class="s-wrap s-demo">Loja demonstrativa: produtos, preços e estoques são fictícios e nenhuma compra é processada. Ilustrações temporárias no lugar das fotos que faltam.</p>`;
+        <p class="s-wrap s-demo">Loja demonstrativa: produtos, preços e estoques são fictícios e nenhuma compra é processada.</p>`;
     }
     const paint = () => document.querySelectorAll('[data-cart-count]').forEach(el => { el.textContent = cart.count(); });
     paint(); cart.subscribe(paint);

@@ -79,10 +79,6 @@ window.VULTO_DATA = (() => {
         images: [
           { type: 'photo', src: '/assets/peca-jeans.jpg', alt: 'Calça Jeans Concreto de lavagem clara pendurada em frente a um pilar de concreto' }
         ] }),
-    p({ id: 'vt-13-04', slug: 'camiseta-anel', name: 'Camiseta Anel', category: 'camisetas', dropId: 'drop-13', price: 169,
-        description: 'Camiseta de algodão com o anel de tinta no peito.',
-        garment: 'tee', print: 'ring', sizes: TOPS, stock: { preto: [4, 6, 6, 3, 0], osso: [0, 3, 5, 2, 1] },
-        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'back' }, { type: 'svg', view: 'detail' }] }),
     p({ id: 'vt-13-05', slug: 'bone-vulto', name: 'Boné Vulto', category: 'bones', dropId: 'drop-13', price: 149,
         description: 'Boné de seis gomos com VULTO bordado na frente e regulagem atrás.',
         garment: 'cap', print: 'logo', sizes: UNICO, stock: { preto: [7] },
@@ -103,10 +99,6 @@ window.VULTO_DATA = (() => {
           { type: 'photo', color: 'osso', src: '/static/shop/fotos/camiseta-logo-osso.jpg', alt: 'Camiseta Logo Corte osso com VULTO preto na frente' },
           { type: 'photo', color: 'osso', src: '/static/shop/fotos/camiseta-logo-osso-dobrada.jpg', alt: 'Camiseta Logo Corte osso apoiada sobre um case' }
         ] }),
-    p({ id: 'vt-12-03', slug: 'bermuda-cargo', name: 'Bermuda Cargo', category: 'bermudas', dropId: 'drop-12', price: 259,
-        description: 'Bermuda de sarja com bolsos cargo laterais.',
-        garment: 'shorts', print: 'none', sizes: JEANS, stock: { preto: [2, 3, 3, 1, 0], cinza: [0, 1, 2, 2, 1] },
-        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'back' }] }),
     p({ id: 'vt-12-04', slug: 'gorro-vulto', name: 'Gorro Vulto', category: 'bones', dropId: 'drop-12', price: 119,
         description: 'Gorro de malha canelada com etiqueta VULTO na barra.',
         garment: 'beanie', print: 'logo', sizes: UNICO, stock: { preto: [0] },
@@ -128,10 +120,6 @@ window.VULTO_DATA = (() => {
         description: 'Ecobag de lona com o anel de tinta impresso.',
         garment: 'tote', print: 'ring', sizes: UNICO, stock: { cru: [12] },
         images: [{ type: 'photo', color: 'cru', src: '/static/shop/fotos/ecobag.jpg', alt: 'Ecobag Concreto de lona crua com o anel de tinta preto' }] }),
-    p({ id: 'vt-11-04', slug: 'camiseta-minhocao', name: 'Camiseta Minhocão', category: 'camisetas', dropId: 'drop-11', price: 159,
-        description: 'Camiseta de algodão com logo pequeno no peito e VULTO grande nas costas.',
-        garment: 'tee', print: 'cut', sizes: TOPS, stock: { preto: [0, 0, 0, 0, 0] },
-        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'back' }] }),
 
     // ---------- Drop 10 · Asfalto: venda do estoque remanescente desligada ----------
     p({ id: 'vt-10-01', slug: 'jaqueta-asfalto', name: 'Jaqueta Asfalto', category: 'jaquetas', dropId: 'drop-10', price: 549, siteSale: false,
