@@ -59,12 +59,14 @@ button,input,select{font:inherit;color:inherit}
 body.paused *,body.paused *::before,body.paused *::after{animation-play-state:paused!important}
 
 /* nav */
-.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:28px;padding:16px clamp(16px,4vw,44px);background:linear-gradient(rgba(15,15,14,.78),rgba(15,15,14,0));transition:background .5s var(--ease-out)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;gap:28px;padding:16px clamp(16px,4vw,44px) 30px;background:linear-gradient(rgba(10,10,10,.86),rgba(10,10,10,.5) 55%,rgba(10,10,10,0));transition:background .5s var(--ease-out)}
+.nav ul a,.nav .logo{text-shadow:0 1px 2px rgba(5,5,6,.95),0 2px 10px rgba(5,5,6,.8)}
+.nav .logo svg{filter:drop-shadow(0 1px 6px rgba(5,5,6,.8))}
 .nav.solid{background:rgba(15,15,14,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .logo{display:block;width:104px;color:var(--text-primary)}
 .logo svg{display:block;width:100%;height:auto}
 .nav ul{display:flex;gap:24px;list-style:none;margin:0 0 0 auto;padding:0;font-size:13px;letter-spacing:.14em;text-transform:uppercase}
-.nav ul a{text-decoration:none;color:var(--text-secondary);transition:color .3s var(--ease-out)}
+.nav ul a{text-decoration:none;color:#cfccc4;transition:color .3s var(--ease-out)}
 .nav ul a:hover{color:var(--text-primary)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--accent);background:var(--accent);color:var(--ink);padding:13px 22px;border-radius:999px;font-family:var(--body);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background .35s var(--ease-out),color .35s var(--ease-out),transform .35s var(--ease-out),border-color .35s var(--ease-out)}
 .btn:hover{background:var(--accent-hover);transform:translateY(-1px)}
@@ -85,6 +87,8 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
 .band{position:absolute;top:50%;transform:translateY(-50%);width:min(34vw,470px);opacity:0;text-shadow:var(--tshadow);pointer-events:none}
 .band::before{content:"";position:absolute;inset:-28% -22%;z-index:-1;pointer-events:none;opacity:calc(.25 + .75*var(--k,1));background:radial-gradient(ellipse 72% 62% at 50% 50%,rgba(6,6,7,var(--sa,.66)) 0%,rgba(6,6,7,calc(var(--sa,.66)*.66)) 46%,rgba(6,6,7,0) 76%)}
 .band.left{left:clamp(20px,6vw,96px)}
+.band.first{left:clamp(20px,4vw,64px);width:min(25vw,360px)}
+.band.first h1{font-size:clamp(36px,4.2vw,62px)}
 .band.right{right:clamp(20px,6vw,96px);text-align:right}
 .band.center{left:50%;width:min(92vw,820px);transform:translate(-50%,-50%);text-align:center}
 .band.center::before{background:radial-gradient(ellipse 60% 56% at 50% 50%,rgba(6,6,7,var(--sa,.5)) 0%,rgba(6,6,7,0) 74%)}
@@ -362,7 +366,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
     <video id="hero" preload="none" muted playsinline aria-hidden="true" tabindex="-1"></video>
     <div class="scrim" aria-hidden="true"></div>
 
-    <div class="band left fx-depth" data-a="0" data-b="0.22" data-seed="11" style="--sa:.66">
+    <div class="band left first fx-depth" data-a="0" data-b="0.22" data-seed="11" style="--sa:.66">
       <p class="kicker">VULTO · DROP Nº 1</p>
       <h1 data-split="words">Quem viu, viu.</h1>
       <p class="sub">Uma peça. Numerada. Só para quem está na lista.</p>
