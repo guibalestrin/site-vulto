@@ -1,6 +1,18 @@
-# Pacote de design: Vulto, Drop Nº 1: Exclusividade
+# Pacote de design: Vulto, lista de espera do próximo drop
 
-Nível 2 (jornada encadeada de 3 trechos de 6 segundos). Marca fictícia. Formulário só de demonstração.
+Nível 2 (jornada encadeada de 3 trechos de 6 segundos). Formulário só de demonstração.
+
+## 0. Fatos do case (a única fonte do texto do site)
+
+O texto do site foi revisado para usar só estes fatos. O texto que está valendo é o de `site/index.html`. Os trechos de texto abaixo neste pacote são da primeira versão e ficaram desatualizados.
+
+- Marca nascida no digital em 2016; expansão física a partir de 2020.
+- 25 lojas físicas: 11 em shoppings e 14 de rua. 12 delas fazem ship from store. Sem lista de endereços nem horários.
+- 14 drops e três collabs por ano.
+- O drop abre na quinta-feira, às 19h, no app. Antes, uma semana de teasers, lista de espera e RSVP. Push e acesso pelo app.
+- No dia do drop, as lojas recebem público e formam filas, com controle por senha no app.
+- As vendas se concentram no lançamento, e há reclamações de prazo de entrega nas semanas de drop.
+- Fora do case, e portanto fora do site como fato: data da campanha (fica "data a anunciar"), nome do drop, peças, preços, quantidades, número de inscritos, depoimentos, link individual, bloqueio de bots, prioridade, limite por pessoa, reposição. As três peças da vitrine são conceitos ilustrativos e estão marcadas assim.
 
 ## 1. A premissa da marca
 
