@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop · Vulto</title>
+<meta name="description" content="Peça da Vulto no shop.">
+<meta name="theme-color" content="#0f0f0e">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230f0f0e'/%3E%3Cpath d='M10 14h11l11 26 11-26h11L38 52h-12z' fill='%23f2efe6'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/shop/shop.css">
+</head>
+<body>
+<header id="shop-header"></header>
+
+<main id="conteudo" tabindex="-1">
+  <div id="s-pdp-root">
+    <div class="s-pdp" aria-busy="true"><div class="s-skel"></div><div></div></div>
+  </div>
+</main>
+
+<dialog class="s-modal" id="s-guide" aria-labelledby="s-guide-t">
+  <header><h2 id="s-guide-t">Guia de medidas</h2><button class="s-x" type="button" data-close aria-label="Fechar guia de medidas">×</button></header>
+  <div class="body" id="s-guide-body"></div>
+</dialog>
+
+<dialog class="s-zoom" id="s-zoom" aria-label="Fotos em tela cheia">
+  <span class="count mono" id="s-zoom-count"></span>
+  <div class="ctrl">
+    <button type="button" id="s-zoom-prev" aria-label="Foto anterior">‹</button>
+    <button type="button" id="s-zoom-next" aria-label="Próxima foto">›</button>
+    <button type="button" data-close aria-label="Fechar">×</button>
+  </div>
+  <div class="stage" id="s-zoom-stage" role="button" tabindex="0" aria-label="Aproximar ou afastar a foto"></div>
+</dialog>
+
+<dialog class="s-drawer s-mini" id="s-mini" aria-labelledby="s-mini-t">
+  <header><h2 id="s-mini-t">Adicionado ao carrinho</h2><button class="s-x" type="button" data-close aria-label="Fechar">×</button></header>
+  <div class="body" id="s-mini-body"></div>
+  <footer><button class="s-btn ghost" type="button" data-close>Continuar</button><a class="s-btn" href="/cart">Ver carrinho</a></footer>
+</dialog>
+
+<footer id="shop-footer"></footer>
+
+<script src="/static/shop/data.js"></script>
+<script src="/static/shop/core.js"></script>
+<script src="/static/shop/product.js"></script>
+</body>
+</html>

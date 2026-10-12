@@ -1,0 +1,7 @@
+{
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/shop/category/:categoria", "destination": "/shop/index.html" },
+    { "source": "/shop/:slug", "destination": "/shop/produto.html" }
+  ]
+}

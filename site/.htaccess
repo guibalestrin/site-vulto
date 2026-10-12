@@ -1,0 +1,11 @@
+# Rotas do shop na HostGator (Apache). A Home não passa por estas regras.
+Options -MultiViews
+RewriteEngine On
+
+# Arquivos e pastas que existem são servidos como estão.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^shop/category/[^/]+/?$ shop/index.html [L]
+RewriteRule ^shop/[^/]+/?$ shop/produto.html [L]
