@@ -52,9 +52,9 @@
     return true;
   }
   const isPurchasable = (p, t = now()) => isListed(p, t) && !isSoldOut(p);
-  /* Teaser: peça marcada teaser, de drop confirmado, na semana antes do lançamento. Aparece como
-     "app exclusive", sem preço de compra no site e fora do carrinho. */
-  const isTeaser = (p, t = now()) => p.status === 'published' && !!p.teaser && V.inTeaser(dropById[p.dropId], t);
+  /* Coming soon: peça marcada teaser, de drop que ainda não abriu. Aparece como "app exclusive",
+     sem compra pelo site e fora do carrinho. Data e contagem só se o drop estiver confirmado. */
+  const isTeaser = (p, t = now()) => p.status === 'published' && !!p.teaser && !!dropById[p.dropId] && releaseAt(p) > t;
   const listedProducts = () => D.products.filter(p => isListed(p)).map(enrich);
   const teaserProducts = () => D.products.filter(p => isTeaser(p)).map(enrich);
   const productBySlug = slug => { const p = D.products.find(x => x.slug === slug); return p && (isListed(p) || isTeaser(p)) ? enrich(p) : null; };
@@ -299,15 +299,24 @@
     const tag = (im, cls) => im.kind === 'photo'
       ? `<img class="${cls}" src="${esc(im.src)}" alt="" loading="lazy" decoding="async" width="1600" height="900">`
       : im.html.replace('<svg class="g-svg"', `<svg class="g-svg ${cls}" aria-hidden="true"`).replace(/<title>.*?<\/title>/, '');
-    const dots = p.comingSoon ? `<span>Abre ${esc(V.dayMonth(p.drop))}, 19h, só no app</span>`
+    const dots = p.comingSoon ? `<span>${V.isConfirmed(p.drop) ? `Abre ${esc(V.dayMonth(p.drop))}, 19h, só no app` : 'Data a anunciar · só no app'}</span>`
       : p.colors.length > 1
       ? `<span class="s-dots" aria-hidden="true">${p.colors.map(c => `<i class="s-dot" style="background:${colorHex(c)}"></i>`).join('')}</span><span>${p.colors.length} cores</span>`
       : `<span>${esc(colorName(p.colors[0]))}</span>`;
     const f = statusFlag(p);
     return `<div class="s-cell"><a class="s-card ${p.soldOut ? 'is-out' : ''}" href="/shop/${p.slug}">
       <div class="s-media">${f ? `<span class="s-flag ${f.cls}">${esc(f.text)}</span>` : ''}${tag(main, 'main' + (alt ? ' has-alt' : ''))}${alt ? tag(alt, 'alt') : ''}</div>
-      <div class="s-info"><span class="s-dl">${esc(dropLabel(p.drop))}</span><${h}>${esc(p.name)}</${h}><span class="s-price">${money(p.price)}</span><span class="s-sub">${dots}</span></div>
+      <div class="s-info"><span class="s-dl">${esc(dropLabel(p.drop))}</span><${h}>${esc(p.name)}</${h}><span class="s-price">${money(p.price)}</span><span class="s-sub">${dots}</span>${p.comingSoon ? '' : ratingHTML(p)}</div>
     </a>${saveButton(p)}</div>`;
+  }
+
+  /* ---------- avaliações (nota de 1 a 5; peça que ainda não lançou não tem) ---------- */
+  const rate = n => n.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  function ratingHTML(p, big = false) {
+    const r = p.rating; if (!r || !r.count) return '';
+    const label = `Nota ${rate(r.avg)} de 5, ${r.count} ${r.count === 1 ? 'avaliação' : 'avaliações'}`;
+    if (!big) return `<span class="s-rate" aria-label="${label}"><span aria-hidden="true">★ ${rate(r.avg)} <small>(${r.count})</small></span></span>`;
+    return `<p class="s-rate big" aria-label="${label}"><span class="s-stars" aria-hidden="true" style="--r:${(r.avg / 5 * 100).toFixed(1)}%">★★★★★</span><span aria-hidden="true"><b>${rate(r.avg)}</b> · ${r.count} ${r.count === 1 ? 'avaliação' : 'avaliações'}</span></p>`;
   }
 
   /* ---------- próximo drop, semana de drop e app ---------- */
@@ -356,7 +365,7 @@
           <ul><li><a href="/shop">Shop</a></li><li><a href="/shop?salvos=1">Salvos<span data-saved-count></span></a></li><li><a href="/cart">Carrinho</a></li><li><a href="/#entrar">Lista de espera</a></li>${V.links.tracking ? `<li><a href="${esc(V.links.tracking)}" rel="noopener">Rastrear pedido</a></li>` : ''}${V.links.support ? `<li><a href="${esc(V.links.support)}" rel="noopener">Atendimento</a></li>` : ''}</ul>
         </div>
         <ul class="s-wrap s-trust" aria-label="Compra no site"><li>Pix, cartão ou boleto</li><li>Devolução em até 7 dias do recebimento</li><li>Estoque conferido antes de concluir</li><li>25 lojas físicas, 12 com ship from store</li></ul>
-        <p class="s-wrap s-demo">Loja demonstrativa: produtos, preços e estoques são fictícios e nenhuma compra é processada.</p>`;
+        <p class="s-wrap s-demo">Loja demonstrativa: produtos, preços, estoques e avaliações são fictícios e nenhuma compra é processada.</p>`;
     }
     const paint = () => document.querySelectorAll('[data-cart-count]').forEach(el => { el.textContent = cart.count(); });
     paint(); cart.subscribe(paint); paintSaved();
@@ -370,6 +379,6 @@
   }
 
   window.VultoShop = { CONFIG, D, V, INTEGRATIONS, now, isListed, isPurchasable, listedProducts, teaserProducts, productBySlug, productById, variantOf, totalStock,
-    money, dateBR, dropLabel, esc, colorName, colorHex, cart, saved, viewed, saveButton, statusFlag, nextDropHTML, dropWeekNote,
+    money, dateBR, dropLabel, esc, colorName, colorHex, cart, saved, viewed, saveButton, statusFlag, ratingHTML, nextDropHTML, dropWeekNote,
     renderGarment, productImages, imageHTML, card, mountChrome, announce, catById, dropById };
 })();

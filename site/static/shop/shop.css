@@ -369,3 +369,11 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
   .s-dl{font-size:9px}
   .nd-clock{font-size:20px}
 }
+
+/* avaliações: discretas, em mono, sem selo */
+.s-rate{grid-column:1/-1;margin-top:2px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--text-2)}
+.s-rate small{font-size:10px;color:var(--text-3)}
+.s-rate.big{display:flex;align-items:center;gap:10px;margin:8px 0 0;font-size:12px}
+.s-rate.big b{color:var(--text);font-weight:500}
+.s-stars{position:relative;display:inline-block;font-size:14px;letter-spacing:2px;color:var(--line-2)}
+.s-stars::before{content:"★★★★★";position:absolute;left:0;top:0;width:var(--r,100%);overflow:hidden;white-space:nowrap;color:var(--text)}

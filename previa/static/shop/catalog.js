@@ -56,7 +56,7 @@
   const teasers = !category && !savedView ? S.teaserProducts() : [];
   if (teasers.length) {
     const d = teasers[0].drop;
-    $('s-teasers').innerHTML = `<h2 class="mono">Coming soon · ${esc(S.dropLabel(d))} · só no app</h2>
+    $('s-teasers').innerHTML = `<h2 class="mono">Coming soon · ${esc(S.dropLabel(d))} · ${S.V.isConfirmed(d) ? esc(S.V.whenShort(d)) : 'data a anunciar'} · só no app</h2>
       <div class="s-grid">${teasers.map(p => S.card(p, 'h3')).join('')}</div>`;
     $('s-teasers').hidden = false;
   }

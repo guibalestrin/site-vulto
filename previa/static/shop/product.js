@@ -35,10 +35,11 @@
   const guide = D.sizeGuides[p.garment];
   const fit = D.fits[p.fit];
   const soon = p.comingSoon;
+  const dated = soon && V.isConfirmed(p.drop); // data e contagem só com drop confirmado
 
   /* ---------- status: disponibilidade real e canal de venda ---------- */
   const flag = S.statusFlag(p);
-  const status = soon ? { chip: 'App exclusive', text: `Coming soon. Abre ${V.whenShort(p.drop)}, só no app.` }
+  const status = soon ? { chip: 'App exclusive', text: dated ? `Coming soon. Abre ${V.whenShort(p.drop)}, só no app.` : `Coming soon. Lança no ${S.dropLabel(p.drop)}, só no app. Data a anunciar.` }
     : p.soldOut ? { chip: flag.text, text: p.dropSoldOut ? 'Todas as peças deste drop esgotaram.' : 'Esta peça esgotou no shop.' }
     : { chip: flag && flag.cls === 'last' ? flag.text : 'Available', text: 'Peça de drop que já aconteceu, à venda no site enquanto houver estoque.' };
 
@@ -49,9 +50,9 @@
   const buyHTML = soon ? `
         <div class="s-teaser">
           <p class="mono s-next-k"><i aria-hidden="true"></i>Abre no app</p>
-          <p class="s-next-when">${esc(V.whenLabel(p.drop))}</p>${V.clockHTML(p.drop)}
+          <p class="s-next-when">${dated ? esc(V.whenLabel(p.drop)) : 'Data a anunciar'}</p>${dated ? V.clockHTML(p.drop) : '<p class="s-note">Entra na lista de espera para receber o aviso quando a data sair.</p>'}
           <div class="s-next-row">${V.appButtons(`peca/${p.slug}`, 's-btn', 's-btn ghost') || '<a class="s-btn" href="/#entrar">Ativar lembrete</a>'}
-            <button class="s-btn ghost" type="button" data-ics="${p.drop.id}">Adicionar à agenda</button>${S.saveButton(p, 's-save s-save-lg')}</div>
+            ${dated ? `<button class="s-btn ghost" type="button" data-ics="${p.drop.id}">Adicionar à agenda</button>` : ''}${S.saveButton(p, 's-save s-save-lg')}</div>
           ${fitHTML}${guide ? `<p style="margin:12px 0 0">${guideBtn}</p>` : ''}
           <p class="s-note">Esta peça não é vendida pelo site no lançamento. A lista de espera não reserva peça: garante que você recebe o aviso.</p>
         </div>` : `
@@ -87,9 +88,10 @@
         <div class="s-gnav" id="s-gnav" aria-hidden="true"></div>
       </div>
       <div class="s-buy">
-        <p class="s-drop mono">${esc(S.dropLabel(p.drop))} · ${soon ? 'abre' : 'lançado'} ${S.dateBR(p.releaseDate)}</p>
+        <p class="s-drop mono">${esc(S.dropLabel(p.drop))} · ${!soon ? `lançado ${S.dateBR(p.releaseDate)}` : dated ? `abre ${S.dateBR(p.releaseDate)}` : 'data a anunciar'}</p>
         <h1>${esc(p.name)}</h1>
         <span class="s-price">${money(p.price)}</span>
+        ${soon ? '' : S.ratingHTML(p, true)}
         <p class="s-status"><span class="s-chip ${soon ? 'app' : p.soldOut ? 'out' : flag && flag.cls === 'last' ? 'last' : ''}">${esc(status.chip)}</span>${esc(status.text)}</p>
         <p class="s-desc">${esc(p.description)}</p>
         ${buyHTML}
@@ -106,7 +108,7 @@
             <p>As regras de troca de tamanho ainda precisam ser definidas pela Vulto e entram aqui.</p></div></details>
           <details><summary>Detalhes</summary><div class="in">
             <p>${esc(p.categoryName)} · ${esc(S.dropLabel(p.drop))}${fit ? ` · Fit ${esc(fit.name.toLowerCase())}` : ''}</p>
-            <p>${soon ? `Abre no app em ${S.dateBR(p.releaseDate)}, às 19h.` : `Lançada no app em ${S.dateBR(p.releaseDate)}.`}</p></div></details>
+            <p>${!soon ? `Lançada no app em ${S.dateBR(p.releaseDate)}.` : dated ? `Abre no app em ${S.dateBR(p.releaseDate)}, às 19h.` : `Lança no ${esc(S.dropLabel(p.drop))}, no app. Data a anunciar.`}</p></div></details>
         </div>
       </div>
     </div>

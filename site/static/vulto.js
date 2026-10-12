@@ -4,8 +4,9 @@
    Fonte única, carregada pela Home e pelo shop (antes de data.js).
 
    Regras que este arquivo garante:
-   - Contagem regressiva, teaser no shop e lembrete na agenda só existem para
-     drop com confirmed: true. Sem drop confirmado, o site diz "data a anunciar".
+   - Contagem regressiva, data e lembrete na agenda só existem para drop com
+     confirmed: true. Sem drop confirmado, o site diz "data a anunciar" (peças em
+     coming soon continuam aparecendo, sem data).
      Nunca presuma que toda quinta tem drop: cada data entra aqui à mão.
    - Links do app e de atendimento ficam null até existir o endereço oficial.
      Sem link do app, os botões levam para a lista de espera.
@@ -27,8 +28,8 @@ window.VULTO = (() => {
     { id: 'drop-12', number: 12, name: 'Garoa',    launchAt: '2026-09-03T19:00:00-03:00', confirmed: true },
     { id: 'drop-13', number: 13, name: 'Tinta',    launchAt: '2026-10-01T19:00:00-03:00', confirmed: true,
       // Conceito tirado do pacote de design (o mundo do filme). Troque pelo texto oficial do drop.
-      concept: 'A tinta branca do filme da Vulto, sobre algodão preto e concreto paulista. Na camiseta ela racha em volta da caveira; no moletom ela seca e vira o anel que fecha o portal.' },
-    // Data cadastrada, ainda não anunciada: sem contagem e sem teaser até confirmed: true.
+      concept: 'A tinta branca do filme da Vulto, sobre algodão preto e concreto paulista. No moletom ela seca e vira o anel que fecha o portal; no jeans, o concreto aparece na lavagem clara.' },
+    // Data cadastrada, ainda não anunciada: sem data nem contagem no site até confirmed: true.
     { id: 'drop-14', number: 14, name: 'Portal',   launchAt: '2026-10-29T19:00:00-03:00', confirmed: false }
   ];
 
@@ -48,7 +49,6 @@ window.VULTO = (() => {
   const community = [];
 
   const DAY = 864e5;
-  const TEASER_DAYS = 7;     // uma semana de teasers antes do drop
   const DROP_WEEK_DAYS = 7;  // semana com mais pedidos e prazos maiores
   const OPEN_HOURS = 6;      // por quanto tempo a Home diz "abriu hoje"
 
@@ -79,7 +79,6 @@ window.VULTO = (() => {
   const at = d => Date.parse(d.launchAt);
   const isConfirmed = d => !!d && (d.confirmed || !!sim.confirmado);
   const nextDrop = (t = now()) => drops.filter(d => isConfirmed(d) && at(d) > t).sort((a, b) => at(a) - at(b))[0] || null;
-  const inTeaser = (d, t = now()) => isConfirmed(d) && at(d) > t && t >= at(d) - TEASER_DAYS * DAY;
   const dropWeek = (t = now()) => drops.find(d => t >= at(d) && t < at(d) + DROP_WEEK_DAYS * DAY) || null;
   const justOpened = (t = now()) => drops.find(d => t >= at(d) && t < at(d) + OPEN_HOURS * 36e5) || null;
 
@@ -177,7 +176,7 @@ window.VULTO = (() => {
     document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', tag) : tag();
   }
 
-  return { drops, byId, links, now, simulating, isConfirmed, nextDrop, inTeaser, dropWeek, justOpened,
+  return { drops, byId, links, now, simulating, isConfirmed, nextDrop, dropWeek, justOpened,
     dropLabel, whenLabel, whenShort, dayMonth, clockHTML, paintClocks, startClocks, downloadICS, platform, hasApp, appButtons,
-    community: authorizedCommunity, TEASER_DAYS };
+    community: authorizedCommunity };
 })();

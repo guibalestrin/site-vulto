@@ -21,8 +21,10 @@
      highlight: 'mais-visto-do-drop' | 'em-alta' | 'mais-salvo-semana'
                 (vem do analytics; nunca à mão)
      noRestock: true   (só quando a Vulto confirmou que não haverá reposição)
-     teaser: true      (pode aparecer como "em breve" na semana de teasers de
-                        um drop confirmado; nunca é vendida pelo site)
+     rating: { avg: 4.8, count: 41 }   (nota média de 1 a 5 e número de avaliações.
+                Aqui são DEMONSTRATIVAS; na loja real, só avaliações verificadas)
+     teaser: true      (aparece como coming soon até o drop dela abrir; nunca é
+                        vendida pelo site antes disso)
    ========================================================================= */
 window.VULTO_DATA = (() => {
   const drops = window.VULTO.drops;
@@ -65,69 +67,62 @@ window.VULTO_DATA = (() => {
 
   const products = [
     // ---------- Drop 13 · Tinta ----------
-    p({ id: 'vt-13-01', slug: 'camiseta-caveira-rachada', name: 'Camiseta Caveira Rachada', category: 'camisetas', dropId: 'drop-13', price: 189,
-        description: 'Camiseta oversized de algodão pesado com caveira e VULTO em tinta branca com acabamento rachado.',
-        garment: 'tee', print: 'skull', fit: 'oversized', sizes: TOPS, stock: { preto: [3, 8, 0, 5, 2] },
-        images: [
-          { type: 'photo', src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/4288853e-889e-48de-98ce-f358b5617828.jpg', alt: 'Camiseta Caveira Rachada preta, vista de frente, sob um viaduto de concreto' },
-          { type: 'photo', src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/e3e4fa63-d79f-4d6f-9ee1-b9050090808e.jpg', alt: 'Camiseta Caveira Rachada preta, enquadramento aberto no concreto' }
-        ] }),
-    p({ id: 'vt-13-02', slug: 'moletom-anel', name: 'Moletom Anel', category: 'moletons', dropId: 'drop-13', price: 429,
+    p({ id: 'vt-13-02', rating: { avg: 4.9, count: 64 }, slug: 'moletom-anel', name: 'Moletom Anel', category: 'moletons', dropId: 'drop-13', price: 429,
         description: 'Moletom de capuz em felpa pesada com anel de tinta branca nas costas.',
         garment: 'hoodie', print: 'ring', sizes: TOPS, stock: { preto: [2, 0, 4, 3, 1] },
         images: [
           { type: 'photo', src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/fda23d5f-efcf-45ab-8f6e-6802e7583c94.jpg', alt: 'Moletom Anel preto, vista de costas com o anel de tinta branca' }
         ] }),
-    p({ id: 'vt-13-03', slug: 'calca-jeans-concreto', name: 'Calça Jeans Concreto', category: 'calcas', dropId: 'drop-13', price: 349,
+    p({ id: 'vt-13-03', rating: { avg: 4.8, count: 41 }, slug: 'calca-jeans-concreto', name: 'Calça Jeans Concreto', category: 'calcas', dropId: 'drop-13', price: 349,
         description: 'Jeans de corte reto, lavagem clara e desgaste nos joelhos.',
         garment: 'pants', print: 'none', fit: 'reto', sizes: JEANS, stock: { azul: [1, 4, 6, 0, 2] },
         images: [
           { type: 'photo', src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/a067344c-bf83-42cb-b8be-d7ea51a21ccc.jpg', alt: 'Calça Jeans Concreto de lavagem clara pendurada em frente a um pilar de concreto' }
         ] }),
-    p({ id: 'vt-13-05', slug: 'bone-vulto', name: 'Boné Vulto', category: 'bones', dropId: 'drop-13', price: 149,
+    p({ id: 'vt-13-05', rating: { avg: 4.7, count: 88 }, slug: 'bone-vulto', name: 'Boné Vulto', category: 'bones', dropId: 'drop-13', price: 149,
         description: 'Boné de seis gomos com VULTO bordado na frente e regulagem atrás.',
         garment: 'cap', print: 'logo', sizes: UNICO, stock: { preto: [7] },
         images: [{ type: 'photo', color: 'preto', src: '/static/shop/fotos/bone-preto.jpg', alt: 'Boné Vulto preto lavado com VULTO bordado, sobre um case preto' }] }),
 
     // ---------- Drop 12 · Garoa ----------
-    p({ id: 'vt-12-01', slug: 'corta-vento-garoa', name: 'Corta-vento Garoa', category: 'jaquetas', dropId: 'drop-12', price: 499,
+    p({ id: 'vt-12-01', rating: { avg: 4.9, count: 37 }, slug: 'corta-vento-garoa', name: 'Corta-vento Garoa', category: 'jaquetas', dropId: 'drop-12', price: 499,
         description: 'Corta-vento leve com zíper frontal e recorte no peito.',
         garment: 'jacket', print: 'cut', sizes: TOPS, stock: { preto: [0, 2, 1, 1, 0], grafite: [1, 3, 2, 0, 1] },
         images: [
           { type: 'photo', color: 'preto', src: '/static/shop/fotos/corta-vento-preto.jpg', alt: 'Corta-vento Garoa preto com zíper, vivo refletivo e VULTO no peito' },
           { type: 'photo', color: 'grafite', src: '/static/shop/fotos/corta-vento-grafite.jpg', alt: 'Corta-vento Garoa grafite com zíper, vivo refletivo e VULTO no peito' }
         ] }),
-    p({ id: 'vt-12-02', slug: 'camiseta-logo-corte', name: 'Camiseta Logo Corte', category: 'camisetas', dropId: 'drop-12', price: 159,
+    p({ id: 'vt-12-02', rating: { avg: 4.8, count: 112 }, slug: 'camiseta-logo-corte', name: 'Camiseta Logo Corte', category: 'camisetas', dropId: 'drop-12', price: 159,
         description: 'Camiseta de algodão com o logo VULTO grande na frente.',
         garment: 'tee', print: 'logo', sizes: TOPS, stock: { osso: [2, 5, 4, 2, 1] },
         images: [
           { type: 'photo', color: 'osso', src: '/static/shop/fotos/camiseta-logo-osso.jpg', alt: 'Camiseta Logo Corte osso com VULTO preto na frente' },
           { type: 'photo', color: 'osso', src: '/static/shop/fotos/camiseta-logo-osso-dobrada.jpg', alt: 'Camiseta Logo Corte osso apoiada sobre um case' }
         ] }),
-    p({ id: 'vt-12-04', slug: 'gorro-vulto', name: 'Gorro Vulto', category: 'bones', dropId: 'drop-12', price: 119,
+    p({ id: 'vt-12-04', rating: { avg: 5.0, count: 29 }, slug: 'gorro-vulto', name: 'Gorro Vulto', category: 'bones', dropId: 'drop-12', price: 119,
         description: 'Gorro de malha canelada com etiqueta VULTO na barra.',
         garment: 'beanie', print: 'logo', sizes: UNICO, stock: { preto: [0] },
         images: [{ type: 'photo', color: 'preto', src: '/static/shop/fotos/gorro-preto.jpg', alt: 'Gorro Vulto preto canelado com etiqueta VULTO' }] }),
 
     // ---------- Drop 11 · Concreto ----------
-    p({ id: 'vt-11-01', slug: 'moletom-logo', name: 'Moletom Logo', category: 'moletons', dropId: 'drop-11', price: 399,
+    p({ id: 'vt-11-01', rating: { avg: 4.8, count: 95 }, slug: 'moletom-logo', name: 'Moletom Logo', category: 'moletons', dropId: 'drop-11', price: 399,
         description: 'Moletom de capuz com o logo VULTO no peito.',
         garment: 'hoodie', print: 'logo', sizes: TOPS, stock: { mescla: [1, 2, 3, 2, 1] },
         images: [
           { type: 'photo', color: 'mescla', src: '/static/shop/fotos/moletom-logo-frente.jpg', alt: 'Moletom Logo cinza mescla, vista de frente com VULTO no peito' },
           { type: 'photo', color: 'mescla', src: '/static/shop/fotos/moletom-logo-costas.jpg', alt: 'Moletom Logo cinza mescla, vista de costas com VULTO grande' }
         ] }),
-    p({ id: 'vt-11-02', slug: 'meia-vulto', name: 'Meia Vulto', category: 'acessorios', dropId: 'drop-11', price: 69,
+    p({ id: 'vt-11-02', rating: { avg: 4.7, count: 143 }, slug: 'meia-vulto', name: 'Meia Vulto', category: 'acessorios', dropId: 'drop-11', price: 69,
         description: 'Meia cano alto de algodão com VULTO no cano.',
         garment: 'socks', print: 'logo', sizes: ['34 a 38', '39 a 44'], stock: { branco: [6, 9] },
         images: [{ type: 'photo', color: 'branco', src: '/static/shop/fotos/meia-branco.jpg', alt: 'Par de meias Vulto brancas de cano alto com VULTO no cano' }] }),
-    p({ id: 'vt-11-03', slug: 'ecobag-concreto', name: 'Ecobag Concreto', category: 'acessorios', dropId: 'drop-11', price: 89,
+    p({ id: 'vt-11-03', rating: { avg: 4.9, count: 52 }, slug: 'ecobag-concreto', name: 'Ecobag Concreto', category: 'acessorios', dropId: 'drop-11', price: 89,
         description: 'Ecobag de lona com o anel de tinta impresso.',
         garment: 'tote', print: 'ring', sizes: UNICO, stock: { cru: [12] },
         images: [{ type: 'photo', color: 'cru', src: '/static/shop/fotos/ecobag.jpg', alt: 'Ecobag Concreto de lona crua com o anel de tinta preto' }] }),
 
     // ---------- Drop 10 · Asfalto: venda do estoque remanescente desligada ----------
-    p({ id: 'vt-10-01', slug: 'jaqueta-asfalto', name: 'Jaqueta Asfalto', category: 'jaquetas', dropId: 'drop-10', price: 549, siteSale: false,
+    p({ id: 'vt-10-01', rating: { avg: 4.8, count: 33 }, slug: 'jaqueta-asfalto', name: 'Jaqueta Asfalto', category: 'jaquetas', dropId: 'drop-10', price: 549, siteSale: false,
         description: 'Exemplo de produto de drop passado que não foi liberado para venda no site.',
         garment: 'jacket', print: 'logo', sizes: TOPS, stock: { preto: [2, 2, 2, 2, 2] },
         images: [{ type: 'svg', view: 'front' }] }),
@@ -139,12 +134,20 @@ window.VULTO_DATA = (() => {
         images: [{ type: 'svg', view: 'front' }] }),
 
     // ---------- Drop 14 · Portal (futuro): fora do shop até o lançamento ----------
-    // teaser: true só tem efeito se o drop estiver confirmado em vulto.js, e só na semana de teasers.
-    p({ id: 'vt-14-01', slug: 'camiseta-portal', name: 'Camiseta Portal', category: 'camisetas', dropId: 'drop-14', price: 189, teaser: true,
+    // teaser: true mostra a peça como coming soon até o drop abrir. Sem teaser, fica escondida.
+    // Lança no Drop 14, só no app. No shop fica só como coming soon, sem compra.
+    p({ id: 'vt-13-01', slug: 'camiseta-caveira-rachada', name: 'Camiseta Caveira Rachada', category: 'camisetas', dropId: 'drop-14', price: 189, teaser: true,
+        description: 'Camiseta oversized de algodão pesado com caveira e VULTO em tinta branca com acabamento rachado.',
+        garment: 'tee', print: 'skull', fit: 'oversized', sizes: TOPS, stock: { preto: [3, 8, 0, 5, 2] },
+        images: [
+          { type: 'photo', src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/4288853e-889e-48de-98ce-f358b5617828.jpg', alt: 'Camiseta Caveira Rachada preta, vista de frente, sob um viaduto de concreto' },
+          { type: 'photo', src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/e3e4fa63-d79f-4d6f-9ee1-b9050090808e.jpg', alt: 'Camiseta Caveira Rachada preta, enquadramento aberto no concreto' }
+        ] }),
+    p({ id: 'vt-14-01', slug: 'camiseta-portal', name: 'Camiseta Portal', category: 'camisetas', dropId: 'drop-14', price: 189,
         description: 'Camiseta de algodão com o anel de tinta na frente.',
         garment: 'tee', print: 'ring', sizes: TOPS, stock: { preto: [10, 10, 10, 10, 10] },
         images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'detail' }] }),
-    p({ id: 'vt-14-02', slug: 'moletom-portal', name: 'Moletom Portal', category: 'moletons', dropId: 'drop-14', price: 449, teaser: true,
+    p({ id: 'vt-14-02', slug: 'moletom-portal', name: 'Moletom Portal', category: 'moletons', dropId: 'drop-14', price: 449,
         description: 'Moletom de capuz com caveira em tinta branca.',
         garment: 'hoodie', print: 'skull', sizes: TOPS, stock: { preto: [6, 6, 6, 6, 6] },
         images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'back' }] })
