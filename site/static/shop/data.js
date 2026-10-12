@@ -6,8 +6,9 @@
    Para trocar pelo catálogo real, substitua VULTO_DATA mantendo o mesmo
    formato; as regras de visibilidade em core.js continuam valendo.
 
-   Imagens: entradas { type: 'photo' } usam arquivos de /assets/ e podem ser
-   trocadas por fotografias reais de produto. Entradas { type: 'svg' } são
+   Imagens: entradas { type: 'photo' } são fotografias (em /assets/ ou em
+   /static/shop/fotos/). Com { color: 'preto' } a foto só aparece quando essa
+   cor está escolhida. Entradas { type: 'svg' } são
    ilustrações temporárias desenhadas em código (core.js · renderGarment)
    e devem ser substituídas por fotos quando existirem.
    ========================================================================= */
@@ -64,23 +65,19 @@ window.VULTO_DATA = (() => {
         garment: 'tee', print: 'skull', sizes: TOPS, stock: { preto: [3, 8, 0, 5, 2] },
         images: [
           { type: 'photo', src: '/assets/peca-camiseta.jpg', alt: 'Camiseta Caveira Rachada preta, vista de frente, sob um viaduto de concreto' },
-          { type: 'photo', src: '/assets/hero-poster.jpg', alt: 'Camiseta Caveira Rachada preta, enquadramento aberto no concreto' },
-          { type: 'svg', view: 'detail', alt: 'Detalhe da estampa de caveira em tinta rachada' }
+          { type: 'photo', src: '/assets/hero-poster.jpg', alt: 'Camiseta Caveira Rachada preta, enquadramento aberto no concreto' }
         ] }),
     p({ id: 'vt-13-02', slug: 'moletom-anel', name: 'Moletom Anel', category: 'moletons', dropId: 'drop-13', price: 429,
         description: 'Moletom de capuz em felpa pesada com anel de tinta branca nas costas.',
         garment: 'hoodie', print: 'ring', sizes: TOPS, stock: { preto: [2, 0, 4, 3, 1] },
         images: [
-          { type: 'photo', src: '/assets/peca-moletom.jpg', alt: 'Moletom Anel preto, vista de costas com o anel de tinta branca' },
-          { type: 'svg', view: 'front', alt: 'Moletom Anel preto, vista de frente' },
-          { type: 'svg', view: 'detail', alt: 'Detalhe do anel de tinta' }
+          { type: 'photo', src: '/assets/peca-moletom.jpg', alt: 'Moletom Anel preto, vista de costas com o anel de tinta branca' }
         ] }),
     p({ id: 'vt-13-03', slug: 'calca-jeans-concreto', name: 'Calça Jeans Concreto', category: 'calcas', dropId: 'drop-13', price: 349,
         description: 'Jeans de corte reto, lavagem clara e desgaste nos joelhos.',
         garment: 'pants', print: 'none', sizes: JEANS, stock: { azul: [1, 4, 6, 0, 2] },
         images: [
-          { type: 'photo', src: '/assets/peca-jeans.jpg', alt: 'Calça Jeans Concreto de lavagem clara pendurada em frente a um pilar de concreto' },
-          { type: 'svg', view: 'back', alt: 'Calça Jeans Concreto, vista de costas' }
+          { type: 'photo', src: '/assets/peca-jeans.jpg', alt: 'Calça Jeans Concreto de lavagem clara pendurada em frente a um pilar de concreto' }
         ] }),
     p({ id: 'vt-13-04', slug: 'camiseta-anel', name: 'Camiseta Anel', category: 'camisetas', dropId: 'drop-13', price: 169,
         description: 'Camiseta de algodão com o anel de tinta no peito.',
@@ -88,40 +85,49 @@ window.VULTO_DATA = (() => {
         images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'back' }, { type: 'svg', view: 'detail' }] }),
     p({ id: 'vt-13-05', slug: 'bone-vulto', name: 'Boné Vulto', category: 'bones', dropId: 'drop-13', price: 149,
         description: 'Boné de seis gomos com VULTO bordado na frente e regulagem atrás.',
-        garment: 'cap', print: 'logo', sizes: UNICO, stock: { preto: [7], cinza: [3] },
-        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'detail' }] }),
+        garment: 'cap', print: 'logo', sizes: UNICO, stock: { preto: [7] },
+        images: [{ type: 'photo', color: 'preto', src: '/static/shop/fotos/bone-preto.jpg', alt: 'Boné Vulto preto lavado com VULTO bordado, sobre um case preto' }] }),
 
     // ---------- Drop 12 · Garoa ----------
     p({ id: 'vt-12-01', slug: 'corta-vento-garoa', name: 'Corta-vento Garoa', category: 'jaquetas', dropId: 'drop-12', price: 499,
         description: 'Corta-vento leve com zíper frontal e recorte no peito.',
-        garment: 'jacket', print: 'cut', sizes: TOPS, stock: { grafite: [1, 3, 2, 0, 1], preto: [0, 2, 1, 1, 0] },
-        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'back' }, { type: 'svg', view: 'detail' }] }),
+        garment: 'jacket', print: 'cut', sizes: TOPS, stock: { preto: [0, 2, 1, 1, 0], grafite: [1, 3, 2, 0, 1] },
+        images: [
+          { type: 'photo', color: 'preto', src: '/static/shop/fotos/corta-vento-preto.jpg', alt: 'Corta-vento Garoa preto com zíper, vivo refletivo e VULTO no peito' },
+          { type: 'photo', color: 'grafite', src: '/static/shop/fotos/corta-vento-grafite.jpg', alt: 'Corta-vento Garoa grafite com zíper, vivo refletivo e VULTO no peito' }
+        ] }),
     p({ id: 'vt-12-02', slug: 'camiseta-logo-corte', name: 'Camiseta Logo Corte', category: 'camisetas', dropId: 'drop-12', price: 159,
         description: 'Camiseta de algodão com o logo VULTO grande na frente.',
-        garment: 'tee', print: 'logo', sizes: TOPS, stock: { osso: [2, 5, 4, 2, 1], preto: [3, 0, 2, 4, 2] },
-        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'back' }, { type: 'svg', view: 'detail' }] }),
+        garment: 'tee', print: 'logo', sizes: TOPS, stock: { osso: [2, 5, 4, 2, 1] },
+        images: [
+          { type: 'photo', color: 'osso', src: '/static/shop/fotos/camiseta-logo-osso.jpg', alt: 'Camiseta Logo Corte osso com VULTO preto na frente' },
+          { type: 'photo', color: 'osso', src: '/static/shop/fotos/camiseta-logo-osso-dobrada.jpg', alt: 'Camiseta Logo Corte osso apoiada sobre um case' }
+        ] }),
     p({ id: 'vt-12-03', slug: 'bermuda-cargo', name: 'Bermuda Cargo', category: 'bermudas', dropId: 'drop-12', price: 259,
         description: 'Bermuda de sarja com bolsos cargo laterais.',
         garment: 'shorts', print: 'none', sizes: JEANS, stock: { preto: [2, 3, 3, 1, 0], cinza: [0, 1, 2, 2, 1] },
         images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'back' }] }),
     p({ id: 'vt-12-04', slug: 'gorro-vulto', name: 'Gorro Vulto', category: 'bones', dropId: 'drop-12', price: 119,
         description: 'Gorro de malha canelada com etiqueta VULTO na barra.',
-        garment: 'beanie', print: 'logo', sizes: UNICO, stock: { preto: [0], mescla: [0] },
-        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'detail' }] }),
+        garment: 'beanie', print: 'logo', sizes: UNICO, stock: { preto: [0] },
+        images: [{ type: 'photo', color: 'preto', src: '/static/shop/fotos/gorro-preto.jpg', alt: 'Gorro Vulto preto canelado com etiqueta VULTO' }] }),
 
     // ---------- Drop 11 · Concreto ----------
     p({ id: 'vt-11-01', slug: 'moletom-logo', name: 'Moletom Logo', category: 'moletons', dropId: 'drop-11', price: 399,
         description: 'Moletom de capuz com o logo VULTO no peito.',
-        garment: 'hoodie', print: 'logo', sizes: TOPS, stock: { mescla: [1, 2, 0, 2, 0], preto: [0, 1, 3, 1, 1] },
-        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'back' }, { type: 'svg', view: 'detail' }] }),
+        garment: 'hoodie', print: 'logo', sizes: TOPS, stock: { mescla: [1, 2, 3, 2, 1] },
+        images: [
+          { type: 'photo', color: 'mescla', src: '/static/shop/fotos/moletom-logo-frente.jpg', alt: 'Moletom Logo cinza mescla, vista de frente com VULTO no peito' },
+          { type: 'photo', color: 'mescla', src: '/static/shop/fotos/moletom-logo-costas.jpg', alt: 'Moletom Logo cinza mescla, vista de costas com VULTO grande' }
+        ] }),
     p({ id: 'vt-11-02', slug: 'meia-vulto', name: 'Meia Vulto', category: 'acessorios', dropId: 'drop-11', price: 69,
         description: 'Meia cano alto de algodão com VULTO no cano.',
-        garment: 'socks', print: 'logo', sizes: ['34 a 38', '39 a 44'], stock: { branco: [6, 9], preto: [4, 0] },
-        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'detail' }] }),
+        garment: 'socks', print: 'logo', sizes: ['34 a 38', '39 a 44'], stock: { branco: [6, 9] },
+        images: [{ type: 'photo', color: 'branco', src: '/static/shop/fotos/meia-branco.jpg', alt: 'Par de meias Vulto brancas de cano alto com VULTO no cano' }] }),
     p({ id: 'vt-11-03', slug: 'ecobag-concreto', name: 'Ecobag Concreto', category: 'acessorios', dropId: 'drop-11', price: 89,
         description: 'Ecobag de lona com o anel de tinta impresso.',
         garment: 'tote', print: 'ring', sizes: UNICO, stock: { cru: [12] },
-        images: [{ type: 'svg', view: 'front' }, { type: 'svg', view: 'detail' }] }),
+        images: [{ type: 'photo', color: 'cru', src: '/static/shop/fotos/ecobag.jpg', alt: 'Ecobag Concreto de lona crua com o anel de tinta preto' }] }),
     p({ id: 'vt-11-04', slug: 'camiseta-minhocao', name: 'Camiseta Minhocão', category: 'camisetas', dropId: 'drop-11', price: 159,
         description: 'Camiseta de algodão com logo pequeno no peito e VULTO grande nas costas.',
         garment: 'tee', print: 'cut', sizes: TOPS, stock: { preto: [0, 0, 0, 0, 0] },

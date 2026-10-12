@@ -206,7 +206,9 @@
   /* Imagens do produto para uma cor: fotos (quando existem e a cor bate) e ilustrações. */
   function productImages(p, colorId) {
     const c = colorId || p.colors[0];
-    return p.images.map((im, i) => {
+    // fotos marcadas com uma cor só aparecem quando essa cor está escolhida
+    const list = p.images.filter(im => im.type !== 'photo' || !im.color || im.color === c);
+    return (list.length ? list : p.images).map((im, i) => {
       if (im.type === 'photo') return { kind: 'photo', src: im.src, alt: im.alt || p.name };
       const view = im.view || 'front';
       const alt = im.alt || `${p.name}, ${colorName(c).toLowerCase()}, ${view === 'back' ? 'vista de costas' : view === 'detail' ? 'detalhe' : 'vista de frente'} (ilustração temporária)`;
