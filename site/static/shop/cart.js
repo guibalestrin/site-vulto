@@ -54,7 +54,7 @@
       ${anyBad ? '<p class="s-warn">Remova os itens indisponíveis para seguir.</p>' : ''}
       <p class="s-note">Os itens do carrinho não ficam reservados. O estoque é conferido de novo antes de concluir.</p>
       ${S.dropWeekNote()}
-      <ul class="s-assure"><li>Compra sem cadastro, só com e-mail</li><li>Pix, cartão ou boleto</li><li>Devolução em até 7 dias do recebimento</li></ul>
+      <ul class="s-assure">${(r => r ? `<li>Nota ${S.rateText(r.avg)} em ${r.count} avaliações do shop</li>` : '')(S.shopRating())}<li>Compra sem cadastro, só com e-mail</li><li>Pix, cartão ou boleto</li><li>Devolução em até 7 dias do recebimento</li></ul>
     </aside>`;
   }
 

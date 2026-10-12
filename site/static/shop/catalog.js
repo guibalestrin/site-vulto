@@ -62,6 +62,23 @@
   }
   S.V.startClocks();
 
+  /* ---------- prova social: média do shop e depoimentos em destaque ---------- */
+  const sr = S.shopRating();
+  if (sr && !savedView) $('s-lede').insertAdjacentHTML('afterend', `<p class="s-rate big s-shoprate">${S.stars(sr.avg)}<span><b>${S.rateText(sr.avg)}</b> · ${sr.count} avaliações de quem comprou no shop</span></p>`);
+  if (!category && !savedView) {
+    // um depoimento 5 estrelas por peça, das mais avaliadas, sem repetir peça
+    const picks = [], cities = new Set();
+    all.filter(p => !p.soldOut && p.reviews && p.reviews.length).sort((a, b) => b.rating.count - a.rating.count).forEach(p => {
+      const r = p.reviews.find(r => r.stars === 5 && !cities.has(r.city));
+      if (r && picks.length < 3) { picks.push({ p, r }); cities.add(r.city); }
+    });
+    if (picks.length) {
+      $('s-proof').innerHTML = `<h2 class="mono">Quem comprou, fala</h2><div class="s-proof-grid">${picks.map(x => S.reviewHTML(x.r, x.p)).join('')}</div>
+        <p class="s-note">Depoimentos de demonstração, como os demais dados deste shop.</p>`;
+      $('s-proof').hidden = false;
+    }
+  }
+
   /* ---------- regras de filtro ---------- */
   function sizeMatch(p) {
     if (!state.tamanho.size) return true;

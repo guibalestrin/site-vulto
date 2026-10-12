@@ -316,8 +316,34 @@
     const r = p.rating; if (!r || !r.count) return '';
     const label = `Nota ${rate(r.avg)} de 5, ${r.count} ${r.count === 1 ? 'avaliação' : 'avaliações'}`;
     if (!big) return `<span class="s-rate" aria-label="${label}"><span aria-hidden="true">★ ${rate(r.avg)} <small>(${r.count})</small></span></span>`;
-    return `<p class="s-rate big" aria-label="${label}"><span class="s-stars" aria-hidden="true" style="--r:${(r.avg / 5 * 100).toFixed(1)}%">★★★★★</span><span aria-hidden="true"><b>${rate(r.avg)}</b> · ${r.count} ${r.count === 1 ? 'avaliação' : 'avaliações'}</span></p>`;
+    return `<p class="s-rate big"><a href="#avaliacoes" aria-label="${label}. Ver avaliações">${stars(r.avg)}<span aria-hidden="true"><b>${rate(r.avg)}</b> · ${r.count} ${r.count === 1 ? 'avaliação' : 'avaliações'}</span></a></p>`;
   }
+  const stars = n => `<span class="s-stars" aria-hidden="true" style="--r:${(n / 5 * 100).toFixed(1)}%">★★★★★</span>`;
+  /* Distribuição coerente com a média: só 5 e 4 estrelas quando a média fica entre 4 e 5. */
+  function ratingBars(r) {
+    const five = Math.round(r.count * Math.min(1, Math.max(0, r.avg - 4)));
+    const rows = [[5, five], [4, r.count - five], [3, 0], [2, 0], [1, 0]];
+    return `<ul class="s-bars" aria-label="Distribuição das notas">${rows.map(([n, c]) =>
+      `<li><span>${n}★</span><i style="--w:${(c / r.count * 100).toFixed(1)}%"></i><span>${c}</span></li>`).join('')}</ul>`;
+  }
+  const monthYear = iso => new Date(iso + 'T12:00:00-03:00').toLocaleDateString('pt-BR', { month: 'short', year: 'numeric', timeZone: 'America/Sao_Paulo' }).replace('.', '').replace(' de ', ' ');
+  /* Um depoimento. Com product, mostra de qual peça é (faixa do shop). */
+  function reviewHTML(rv, product) {
+    return `<article class="s-review">
+      <p class="s-review-h">${stars(rv.stars)}<span class="s-sr">Nota ${rv.stars} de 5.</span><time datetime="${rv.date}">${monthYear(rv.date)}</time></p>
+      <p class="s-review-t">${esc(rv.text)}</p>
+      <p class="s-review-by"><b>${esc(rv.name)}</b> · ${esc(rv.city)}</p>
+      <p class="s-review-m mono">Comprou: ${esc(rv.size)}${rv.fit ? ` · ${esc(rv.fit)}` : ''}</p>
+      ${product ? `<a class="s-review-p" href="/shop/${product.slug}">${esc(product.name)} · ${rate(product.rating.avg)}★</a>` : ''}
+    </article>`;
+  }
+  /* Média ponderada das peças à venda (para o topo do shop e o carrinho). */
+  function shopRating() {
+    const ps = listedProducts().filter(x => x.rating && x.rating.count);
+    const count = ps.reduce((n, x) => n + x.rating.count, 0);
+    return count ? { avg: ps.reduce((n, x) => n + x.rating.avg * x.rating.count, 0) / count, count } : null;
+  }
+  const rateText = rate;
 
   /* ---------- próximo drop, semana de drop e app ---------- */
   function nextDropHTML() {
@@ -379,6 +405,6 @@
   }
 
   window.VultoShop = { CONFIG, D, V, INTEGRATIONS, now, isListed, isPurchasable, listedProducts, teaserProducts, productBySlug, productById, variantOf, totalStock,
-    money, dateBR, dropLabel, esc, colorName, colorHex, cart, saved, viewed, saveButton, statusFlag, ratingHTML, nextDropHTML, dropWeekNote,
+    money, dateBR, dropLabel, esc, colorName, colorHex, cart, saved, viewed, saveButton, statusFlag, ratingHTML, ratingBars, reviewHTML, shopRating, stars, rateText, nextDropHTML, dropWeekNote,
     renderGarment, productImages, imageHTML, card, mountChrome, announce, catById, dropById };
 })();

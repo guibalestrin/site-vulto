@@ -22,7 +22,8 @@
                 (vem do analytics; nunca à mão)
      noRestock: true   (só quando a Vulto confirmou que não haverá reposição)
      rating: { avg: 4.8, count: 41 }   (nota média de 1 a 5 e número de avaliações.
-                Aqui são DEMONSTRATIVAS; na loja real, só avaliações verificadas)
+                Aqui são DEMONSTRATIVAS; na loja real, só avaliações verificadas.
+                Os depoimentos ficam em reviews, no fim do arquivo)
      teaser: true      (aparece como coming soon até o drop dela abrir; nunca é
                         vendida pelo site antes disso)
    ========================================================================= */
@@ -169,6 +170,58 @@ window.VULTO_DATA = (() => {
     regular:   { name: 'Regular',   note: 'Veste no seu tamanho de sempre.' },
     reto:      { name: 'Corte reto', note: 'Mesma largura do quadril à barra. Confira cintura e comprimento na tabela.' }
   };
+
+  /* Depoimentos de clientes (DEMONSTRATIVOS, como o resto deste arquivo).
+     Na loja real, entram só avaliações de quem comprou, com autorização.
+     { name, city, size: tamanho comprado, stars: 1 a 5, date, fit: como veste, text } */
+  const reviews = {
+    'vt-13-02': [
+      { name: 'Lucas M.', city: 'São Paulo', size: 'G', stars: 5, date: '2026-10-06', fit: 'Veste no tamanho', text: 'O anel nas costas é ainda mais bonito ao vivo, a tinta tem textura. Felpa pesada de verdade, aguentou a garoa de outubro tranquilo.' },
+      { name: 'Bianca R.', city: 'Campinas', size: 'M', stars: 5, date: '2026-10-08', fit: 'Veste no tamanho', text: 'Capuz firme, punho que não laceia. Já virou o moletom que eu mais uso.' },
+      { name: 'Thiago S.', city: 'Curitiba', size: 'GG', stars: 4, date: '2026-10-10', fit: 'Ficou um pouco grande', text: 'Muito bom, só achei a manga comprida. Se você gosta mais justo, pega um número menor.' }
+    ],
+    'vt-13-03': [
+      { name: 'Rafael A.', city: 'Rio de Janeiro', size: '42', stars: 5, date: '2026-10-07', fit: 'Veste no tamanho', text: 'Lavagem clara linda e o desgaste no joelho parece natural, nada de rasgo forçado. Corte reto do jeito que eu queria.' },
+      { name: 'Júlia F.', city: 'Belo Horizonte', size: '38', stars: 5, date: '2026-10-09', fit: 'Veste no tamanho', text: 'Usei com a camiseta Logo Corte e virou meu look de sempre. Tecido encorpado.' },
+      { name: 'Diego P.', city: 'Porto Alegre', size: '44', stars: 4, date: '2026-10-11', fit: 'Comprimento longo', text: 'Gostei, mas o comprimento é longo para quem tem menos de 1,75 m. Dobrei a barra e ficou bom.' }
+    ],
+    'vt-13-05': [
+      { name: 'Ana C.', city: 'São Paulo', size: 'Único', stars: 5, date: '2026-10-05', text: 'Bordado bem feito e a lavagem deixou com cara de boné antigo. Regulagem atrás firme.' },
+      { name: 'Pedro H.', city: 'Recife', size: 'Único', stars: 4, date: '2026-10-08', text: 'Bonito, mas a aba é mais reta do que eu imaginava. Com o uso já foi curvando.' },
+      { name: 'Marina L.', city: 'Florianópolis', size: 'Único', stars: 5, date: '2026-10-10', text: 'Comprei dois, um para mim e um para o meu irmão. Combina com tudo.' }
+    ],
+    'vt-12-01': [
+      { name: 'Gabriel T.', city: 'São Paulo', size: 'M', stars: 5, date: '2026-09-12', fit: 'Veste no tamanho', text: 'Leve, corta o vento de verdade e o vivo refletivo aparece bem à noite. Uso para pedalar.' },
+      { name: 'Carol N.', city: 'Curitiba', size: 'P', stars: 5, date: '2026-09-20', fit: 'Veste no tamanho', text: 'Peguei a grafite. Cabe um moletom por baixo sem ficar apertado.' },
+      { name: 'Vinícius O.', city: 'Santos', size: 'G', stars: 5, date: '2026-10-02', fit: 'Veste no tamanho', text: 'Zíper de qualidade e o recorte no peito dá um ar diferente. Melhor peça do Garoa.' }
+    ],
+    'vt-12-02': [
+      { name: 'Larissa B.', city: 'São Paulo', size: 'M', stars: 5, date: '2026-09-10', fit: 'Veste no tamanho', text: 'O osso é um off-white lindo e o logo preto chama atenção sem exagero. Já lavei várias vezes e a estampa segue inteira.' },
+      { name: 'João V.', city: 'Goiânia', size: 'G', stars: 4, date: '2026-09-18', fit: 'Um pouco curta', text: 'Algodão bom. Achei a camiseta um pouco curta no comprimento, mas gostei.' },
+      { name: 'Isabela M.', city: 'Rio de Janeiro', size: 'P', stars: 5, date: '2026-09-27', fit: 'Veste no tamanho', text: 'Minha camiseta favorita da Vulto até agora. Vai com jeans, com cargo, com tudo.' }
+    ],
+    'vt-12-04': [
+      { name: 'Felipe R.', city: 'Curitiba', size: 'Único', stars: 5, date: '2026-09-15', text: 'Canelado grosso e quente de verdade. A etiqueta na barra é discreta do jeito certo.' },
+      { name: 'Nathalia G.', city: 'São Paulo', size: 'Único', stars: 5, date: '2026-09-22', text: 'Não deforma depois de usar. Pena que esgotou, queria o segundo.' },
+      { name: 'Bruno K.', city: 'Porto Alegre', size: 'Único', stars: 5, date: '2026-10-01', text: 'Inverno aqui no sul pede. Melhor gorro que já tive.' }
+    ],
+    'vt-11-01': [
+      { name: 'Matheus L.', city: 'São Paulo', size: 'G', stars: 5, date: '2026-08-14', fit: 'Veste no tamanho', text: 'Mescla bonito e o VULTO grande nas costas é o destaque. Felpa macia por dentro.' },
+      { name: 'Amanda S.', city: 'Salvador', size: 'M', stars: 5, date: '2026-08-29', fit: 'Veste no tamanho', text: 'Perdi o drop no app e comprei depois, aqui no shop. Chegou bem embalado e é ainda melhor pessoalmente.' },
+      { name: 'Rodrigo C.', city: 'Campinas', size: 'GG', stars: 4, date: '2026-09-16', fit: 'Veste no tamanho', text: 'Caimento ótimo. Só o capuz que poderia ser um pouco maior.' }
+    ],
+    'vt-11-02': [
+      { name: 'Letícia A.', city: 'São Paulo', size: '34 a 38', stars: 5, date: '2026-08-12', text: 'Cano alto que não escorrega, e o VULTO no cano aparece certinho com tênis.' },
+      { name: 'Gustavo E.', city: 'Belo Horizonte', size: '39 a 44', stars: 4, date: '2026-08-30', text: 'Boa, mas o branco pede cuidado na lavagem. Algodão confortável.' },
+      { name: 'Paula D.', city: 'Curitiba', size: '34 a 38', stars: 5, date: '2026-09-21', text: 'Comprei três pares. Detalhe pequeno que fecha o look.' }
+    ],
+    'vt-11-03': [
+      { name: 'Henrique N.', city: 'São Paulo', size: 'Único', stars: 5, date: '2026-08-18', text: 'Lona grossa, aguenta notebook e livro. O anel de tinta impresso ficou muito bonito.' },
+      { name: 'Sofia T.', city: 'Rio de Janeiro', size: 'Único', stars: 5, date: '2026-09-03', text: 'Uso todo dia na faculdade. Alça na medida certa para o ombro.' },
+      { name: 'Caio M.', city: 'Fortaleza', size: 'Único', stars: 4, date: '2026-09-25', text: 'Bem feita. Só sinto falta de um bolsinho interno.' }
+    ]
+  };
+  products.forEach(x => { x.reviews = reviews[x.id] || []; });
 
   return { drops, categories, colors, products, sizeGuides, fits };
 })();

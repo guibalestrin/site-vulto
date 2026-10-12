@@ -112,6 +112,17 @@
         </div>
       </div>
     </div>
+    ${!soon && p.rating ? `<section class="s-revs" id="avaliacoes" aria-labelledby="s-revs-t">
+      <div class="s-revs-sum">
+        <h2 class="mono" id="s-revs-t">Avaliações</h2>
+        <p class="s-revs-avg"><b>${S.rateText(p.rating.avg)}</b><span>de 5</span></p>
+        ${S.stars(p.rating.avg)}
+        <p class="s-note">${p.rating.count} ${p.rating.count === 1 ? 'avaliação' : 'avaliações'} de quem comprou</p>
+        ${S.ratingBars(p.rating)}
+        <p class="s-note">Avaliações de demonstração, como os demais dados deste shop.</p>
+      </div>
+      <div class="s-revs-list">${p.reviews.map(r => S.reviewHTML(r)).join('')}</div>
+    </section>` : ''}
     <div id="s-rails"></div>`;
 
   /* ---------- galeria ---------- */
