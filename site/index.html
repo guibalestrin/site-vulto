@@ -125,8 +125,24 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
 @media (max-height:560px){.cue,.progress{display:none}}
 .hero-static{display:none}
 
-/* hero estático: cinco portões, idênticos ao JS */
-@media (max-width:720px),(orientation:portrait) and (max-width:1024px),(orientation:portrait) and (pointer:coarse),(orientation:landscape) and (pointer:coarse) and (max-height:560px),(prefers-reduced-motion:reduce){
+/* celular e tablet em pé: o mesmo filme numa janela quadrada no alto, os textos embaixo */
+@media (max-width:720px),(orientation:portrait) and (max-width:1024px),(orientation:portrait) and (pointer:coarse){
+  .hero{height:700vh}
+  .stage{background:var(--canvas)}
+  .stage .poster,.stage video{inset:auto 0;top:68px;width:100%;height:min(100vw,52svh);-webkit-mask-image:linear-gradient(180deg,transparent,#000 10%,#000 88%,transparent);mask-image:linear-gradient(180deg,transparent,#000 10%,#000 88%,transparent)}
+  .scrim,.band::before,.progress{display:none}
+  .band,.band.left,.band.right,.band.first,.band.center{left:20px;right:20px;width:auto;top:calc(68px + min(100vw,52svh) + 6px);transform:none;text-align:left}
+  .band h1,.band h2,.band.first h1,.settle h2{font-size:clamp(30px,8.4vw,44px)}
+  .band .sub{font-size:15px;margin-top:12px}
+  .band .kicker{margin-bottom:10px}
+  .settle .gap{display:none}
+  .fx-rise .row{justify-content:flex-start;margin-top:18px}
+  .fx-rise .row .ghost{display:none}
+  .cue{bottom:14px}
+}
+
+/* hero estático: celular deitado e movimento reduzido, idênticos ao JS */
+@media (orientation:landscape) and (pointer:coarse) and (max-height:560px),(prefers-reduced-motion:reduce){
   .hero{height:auto}
   .stage{display:none}
   .hero-static{display:flex;position:relative;min-height:100vh;min-height:100svh;align-items:flex-end;padding:120px 20px 56px;background:#0b0b0a url("assets/hero-poster.jpg") center 30%/cover no-repeat}
@@ -738,9 +754,6 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
 
   // os cinco portões, decididos ao vivo
   const GATES = [
-    '(max-width: 720px)',
-    '(orientation: portrait) and (max-width: 1024px)',
-    '(orientation: portrait) and (pointer: coarse)',
     '(orientation: landscape) and (pointer: coarse) and (max-height: 560px)',
     '(prefers-reduced-motion: reduce)'
   ];
