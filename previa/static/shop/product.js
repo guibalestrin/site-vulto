@@ -280,6 +280,11 @@
   const mini = $('s-mini');
   mini.addEventListener('click', e => { if (e.target === mini || e.target.closest('[data-close]')) mini.close(); });
   const thumbOf = (x, color) => { const im = S.productImages(x, color)[0]; return im.kind === 'photo' ? `<img src="${esc(im.src)}" alt="">` : im.html.replace('<svg class="g-svg"', '<svg class="g-svg" aria-hidden="true"').replace(/<title>.*?<\/title>/, ''); };
+  // o "Leve junto" da gaveta muda o carrinho: os totais acompanham
+  document.addEventListener('vulto:bump', () => {
+    if (!$('s-mini-count')) return;
+    $('s-mini-count').textContent = S.cart.count(); $('s-mini-sub').textContent = money(S.cart.subtotal());
+  });
   $('s-add').addEventListener('click', () => {
     if (p.soldOut) return;
     if (!state.size) { paintStock('Escolha um tamanho antes de adicionar.', true); $('s-sizes').querySelector('.s-size:not([aria-disabled="true"])')?.focus(); return; }
@@ -290,13 +295,11 @@
     btn.textContent = 'Adicionado ✓';
     setTimeout(() => paintStock(), 1600);
     S.announce(`${p.name}, ${S.colorName(state.color)}, tamanho ${state.size}, adicionado ao carrinho.`);
-    const inCart = new Set(S.cart.lines().map(l => l.productId));
-    const pair = fitPicks.filter(x => !inCart.has(x.id)).slice(0, 2);
     $('s-mini-body').innerHTML = `<div class="s-line" style="grid-template-columns:84px 1fr"><div class="s-thumb">${thumbOf(p, state.color)}</div>
       <div><h3>${esc(p.name)}</h3><p>${esc(S.colorName(state.color))} · ${esc(state.size)}</p><p class="s-price" style="margin-top:8px">${money(p.price)}</p></div></div>
-      <div class="s-row" style="margin-top:10px"><span>Itens no carrinho</span><span>${S.cart.count()}</span></div>
-      <div class="s-row"><span>Subtotal</span><span>${money(S.cart.subtotal())}</span></div>
-      ${pair.length ? `<p class="mono" style="color:var(--text-2);margin:22px 0 4px">Complete the fit</p>${pair.map(x => `<a class="s-line s-pair" href="/shop/${x.slug}"><div class="s-thumb">${thumbOf(x)}</div><div><h3>${esc(x.name)}</h3><p>${esc(S.dropLabel(x.drop))}</p></div><span class="s-price">${money(x.price)}</span></a>`).join('')}` : ''}`;
+      <div class="s-row" style="margin-top:10px"><span>Itens no carrinho</span><span id="s-mini-count">${S.cart.count()}</span></div>
+      <div class="s-row"><span>Subtotal</span><span id="s-mini-sub">${money(S.cart.subtotal())}</span></div>
+      ${S.bumpSlot([p])}`;
     mini.showModal();
   });
 

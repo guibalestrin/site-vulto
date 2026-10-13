@@ -345,6 +345,78 @@
   }
   const rateText = rate;
 
+  /* ---------- order bump: "Leve junto", uma peça complementar em um clique ----------
+     Sem desconto inventado e sem urgência falsa: o argumento é o que já está no pedido
+     (mesmo drop ou look que fecha), a nota da peça e o estoque quando ele é baixo de verdade. */
+  const GROUP = { camisetas: 'cima', moletons: 'cima', jaquetas: 'cima', calcas: 'baixo', bermudas: 'baixo', bones: 'acessorio', acessorios: 'acessorio' };
+  const BUMP_MAX_PRICE = 150; // peça de ticket baixo: decisão de um clique
+  let lastBump = null;        // { id, color, size } da última peça adicionada pelo bump
+  function bumpFor(anchors) {
+    if (!anchors.length) return null;
+    const taken = new Set(cartLines().map(l => l.productId).concat(anchors.map(a => a.id)));
+    const groups = new Set(anchors.map(a => GROUP[a.category]));
+    const drops = new Set(anchors.map(a => a.dropId));
+    const score = x => (x.price <= BUMP_MAX_PRICE ? 8 : 0) + (drops.has(x.dropId) ? 4 : 0) + (groups.has(GROUP[x.category]) ? 0 : 2) + (x.rating ? x.rating.avg / 5 : 0);
+    const best = listedProducts().filter(x => !x.soldOut && !taken.has(x.id)).sort((a, b) => score(b) - score(a) || a.price - b.price)[0];
+    return best ? { p: best, anchor: anchors.find(a => a.dropId === best.dropId) || anchors[0] } : null;
+  }
+  const thumbHTML = (x, color) => { const im = productImages(x, color)[0]; return im.kind === 'photo' ? `<img src="${esc(im.src)}" alt="" loading="lazy" decoding="async">` : im.html.replace('<svg class="g-svg"', '<svg class="g-svg" aria-hidden="true"').replace(/<title>.*?<\/title>/, ''); };
+  function bumpInner(anchors) {
+    // logo depois de adicionar, o bloco confirma em vez de oferecer outra peça
+    if (lastBump && cartLines().some(l => l.productId === lastBump.id && l.size === lastBump.size && !l.unavailable)) {
+      const x = productById(lastBump.id);
+      return `<div class="s-bump is-in" role="status"><p class="s-bump-k mono">Leve junto</p>
+        <div class="s-bump-row"><a class="s-thumb" href="/shop/${x.slug}" tabindex="-1" aria-hidden="true">${thumbHTML(x, lastBump.color)}</a>
+          <div><h3>✓ ${esc(x.name)} no pedido</h3><p class="s-bump-why">${esc(colorName(lastBump.color))} · ${esc(lastBump.size)} · ${money(x.price)}</p></div></div>
+        <button class="s-link" type="button" data-bump-undo>Desfazer</button></div>`;
+    }
+    const b = bumpFor(anchors); if (!b) return '';
+    const { p: x, anchor } = b;
+    const color = x.colors.find(c => x.variants.some(v => v.color === c && v.stock > 0));
+    const sizes = x.sizes.filter(z => (variantOf(x, color, z)?.stock || 0) > 0);
+    const why = anchor.dropId === x.dropId ? `Do mesmo ${dropLabel(x.drop)} do seu ${anchor.name}.` : `Fecha o look com o seu ${anchor.name}.`;
+    const low = x.stock <= CONFIG.lowStock ? ` <b>Restam ${x.stock}.</b>` : '';
+    const add = sizes.length > 1
+      ? `<p class="s-bump-l mono">Adicionar no tamanho</p><div class="s-bump-sizes">${sizes.map(z => `<button class="s-btn" type="button" data-bump-add data-size="${esc(z)}" aria-label="Adicionar ${esc(x.name)}, tamanho ${esc(z)}, ${money(x.price)}">${esc(z)}</button>`).join('')}</div>`
+      : `<button class="s-btn full" type="button" data-bump-add data-size="${esc(sizes[0])}">+ Adicionar · ${money(x.price)}</button>`;
+    return `<div class="s-bump" data-id="${x.id}" data-color="${color}">
+      <p class="s-bump-k mono">Leve junto</p>
+      <div class="s-bump-row"><a class="s-thumb" href="/shop/${x.slug}" tabindex="-1" aria-hidden="true">${thumbHTML(x, color)}</a>
+        <div><h3><a href="/shop/${x.slug}">${esc(x.name)}</a></h3><p class="s-bump-why">${esc(why)}${low}</p>${ratingHTML(x)}</div>
+        <span class="s-price">${money(x.price)}</span></div>
+      ${add}
+      <p class="s-bump-note">Vai no mesmo pedido. Dá para tirar no carrinho a qualquer momento.</p>
+    </div>`;
+  }
+  /* O bloco se redesenha sozinho: anchors são as peças que já estão no pedido. */
+  const bumpSlot = anchors => `<div class="s-bump-slot" data-anchors="${anchors.map(a => a.id).join(',')}">${bumpInner(anchors)}</div>`;
+  function repaintBumps() {
+    document.querySelectorAll('.s-bump-slot').forEach(el => {
+      const anchors = el.dataset.anchors.split(',').map(productById).filter(Boolean);
+      el.innerHTML = bumpInner(anchors);
+    });
+  }
+  document.addEventListener('click', e => {
+    const add = e.target.closest('[data-bump-add]'), undo = e.target.closest('[data-bump-undo]');
+    if (!add && !undo) return;
+    if (add) {
+      const box = add.closest('.s-bump'); const x = productById(box.dataset.id);
+      const r = cart.add(box.dataset.id, box.dataset.color, add.dataset.size, 1);
+      if (!r.ok) { add.closest('.s-bump').querySelector('.s-bump-note').textContent = r.reason; return; }
+      lastBump = { id: box.dataset.id, color: box.dataset.color, size: add.dataset.size };
+      announce(`${x.name}, tamanho ${add.dataset.size}, adicionado ao pedido.`);
+    } else if (lastBump) {
+      const i = cartLines().findIndex(l => l.productId === lastBump.id && l.color === lastBump.color && l.size === lastBump.size);
+      if (i >= 0) { const items = readCart(); if (items[i].qty > 1) { items[i].qty -= 1; writeCart(items); } else cart.remove(i); }
+      announce('Peça tirada do pedido.');
+      lastBump = null;
+    }
+    repaintBumps();
+    // a página do carrinho se redesenha ao mudar o carrinho; o foco volta para o bloco novo
+    document.querySelector('.s-bump-slot [data-bump-undo], .s-bump-slot [data-bump-add]')?.focus();
+    document.dispatchEvent(new CustomEvent('vulto:bump'));
+  });
+
   /* ---------- próximo drop, semana de drop e app ---------- */
   function nextDropHTML() {
     const next = V.nextDrop(), open = V.justOpened();
@@ -405,6 +477,6 @@
   }
 
   window.VultoShop = { CONFIG, D, V, INTEGRATIONS, now, isListed, isPurchasable, listedProducts, teaserProducts, productBySlug, productById, variantOf, totalStock,
-    money, dateBR, dropLabel, esc, colorName, colorHex, cart, saved, viewed, saveButton, statusFlag, ratingHTML, ratingBars, reviewHTML, shopRating, stars, rateText, nextDropHTML, dropWeekNote,
+    money, dateBR, dropLabel, esc, colorName, colorHex, cart, saved, viewed, saveButton, statusFlag, bumpSlot, ratingHTML, ratingBars, reviewHTML, shopRating, stars, rateText, nextDropHTML, dropWeekNote,
     renderGarment, productImages, imageHTML, card, mountChrome, announce, catById, dropById };
 })();

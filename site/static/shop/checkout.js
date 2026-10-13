@@ -93,6 +93,7 @@
         ${stepHead(3, 'Pagamento', esc(PAY.find(x => x.id === data.pay).label))}
           ${step === 3 ? `<form class="panel s-form" data-step="3" novalidate><fieldset class="s-pay" style="border:0;padding:0;margin:0"><legend class="lbl" style="margin-bottom:10px">Forma de pagamento</legend>
             ${PAY.map(x => `<label><input type="radio" name="pay" value="${x.id}" ${data.pay === x.id ? 'checked' : ''}><span>${x.label}<small>${x.note}</small></span></label>`).join('')}</fieldset>
+            <div class="f">${S.bumpSlot(S.cart.lines().filter(l => !l.unavailable).map(l => l.product))}</div>
             <div class="f"><button class="s-btn" type="submit">Revisar pedido</button></div></form>` : ''}</li>
         ${stepHead(4, 'Revisão', '')}
           ${step === 4 ? `<div class="panel">
@@ -164,6 +165,8 @@
       document.getElementById('c-result')?.focus();
     }
   });
+  // o "Leve junto" muda o pedido: resumo e etapa atual se redesenham
+  document.addEventListener('vulto:bump', () => { render(); document.querySelector('.s-bump-slot [data-bump-undo], .s-bump-slot [data-bump-add]')?.focus(); });
   S.cart.subscribe(() => { if (!document.activeElement || !root.contains(document.activeElement)) render(); });
   render();
 })();

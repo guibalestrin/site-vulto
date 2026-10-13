@@ -408,3 +408,30 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 .s-proof-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,28px);margin-top:6px}
 .s-proof .s-review{border-bottom:0;border-top:1px solid var(--line-2)}
 @media (max-width:900px){.s-revs{grid-template-columns:1fr}.s-proof-grid{grid-template-columns:1fr}.s-proof .s-review{padding:18px 0}}
+
+/* order bump "Leve junto": em destaque no carrinho, sem cara de promoção */
+.s-bump-slot:empty{display:none}
+.s-bump{position:relative;margin:18px 0 0;padding:16px 16px 14px;border:1px solid var(--accent);background:var(--panel)}
+.s-bump::before{content:"";position:absolute;left:14px;right:14px;top:-1px;border-top:1px dashed var(--canvas)}
+.s-bump-k{display:inline-block;margin:0 0 12px;padding:4px 8px;background:var(--accent);color:var(--ink)!important;font-size:10px}
+.s-bump-row{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:start}
+.s-bump .s-thumb{position:relative;display:block;aspect-ratio:4/5;background:var(--tile);overflow:hidden}
+.s-bump h3{margin:0;font-size:15px;font-weight:600;line-height:1.25}
+.s-bump h3 a:hover{text-decoration:underline;text-underline-offset:3px}
+.s-bump-why{margin:4px 0 0;font-size:13px;color:var(--text-2)}
+.s-bump-why b{color:var(--text);font-weight:600}
+.s-bump .s-rate{display:block;margin-top:6px}
+.s-bump .s-price{font-size:14px}
+.s-bump > .s-btn{margin-top:14px;min-height:46px}
+.s-bump-l{margin:14px 0 8px;color:var(--text-2)}
+.s-bump-sizes{display:flex;flex-wrap:wrap;gap:8px}
+.s-bump-sizes .s-btn{flex:1 1 auto;min-height:44px;padding:0 14px;letter-spacing:.06em}
+.s-bump-note{margin:10px 0 0;font-size:12px;color:var(--text-3)}
+.s-bump.is-in{border-color:var(--line-2);background:none}
+.s-bump.is-in .s-bump-k{background:none;color:var(--text-2)!important;padding:0}
+.s-bump.is-in .s-link{margin-top:10px;font-size:12px}
+.s-sum .s-bump-slot{margin-top:6px}
+.s-sum .s-bump + *{margin-top:16px}
+.s-form .s-bump{margin:4px 0 0}
+@media (prefers-reduced-motion:no-preference){.s-bump:not(.is-in){animation:bumpin .5s var(--ease) both}}
+@keyframes bumpin{from{opacity:0;transform:translateY(8px)}}

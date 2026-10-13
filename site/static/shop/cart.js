@@ -50,6 +50,7 @@
       <div class="s-row"><span>Subtotal</span><span>${money(sub)}</span></div>
       <div class="s-row"><span>Frete</span><span style="font-family:var(--body);color:var(--text-2)">Calculado no checkout</span></div>
       <div class="s-row total"><span>Total parcial</span><span>${money(sub)}</span></div>
+      ${S.bumpSlot(lines.filter(l => !l.unavailable).map(l => l.product))}
       <a class="s-btn full" href="/checkout" ${S.cart.count() ? '' : 'aria-disabled="true" style="pointer-events:none;opacity:.4"'}>Ir para o checkout</a>
       ${anyBad ? '<p class="s-warn">Remova os itens indisponíveis para seguir.</p>' : ''}
       <p class="s-note">Os itens do carrinho não ficam reservados. O estoque é conferido de novo antes de concluir.</p>
