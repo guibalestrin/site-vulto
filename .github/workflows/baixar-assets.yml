@@ -1,0 +1,29 @@
+# Baixa as imagens e o vídeo que estavam no Higgsfield para site/assets/ e
+# grava no próprio branch. Roda quando este arquivo ou o script mudam.
+name: Baixar assets do site
+
+on:
+  push:
+    paths:
+      - .github/workflows/baixar-assets.yml
+      - tools/baixar-assets.py
+      - assets-cdn.json
+
+permissions:
+  contents: write
+
+jobs:
+  baixar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Baixar arquivos
+        run: python3 tools/baixar-assets.py
+      - name: Gravar no branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/assets
+          if git diff --cached --quiet; then echo "nada novo"; exit 0; fi
+          git commit -m "Add site assets downloaded from the former Higgsfield CDN"
+          git push
