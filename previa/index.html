@@ -225,7 +225,7 @@ section{position:relative;scroll-margin-top:72px}
 .ticket::before{left:-8px}.ticket::after{right:-8px}
 .hold.done .ticket{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .ticket small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase}
-.ticket strong{display:block;font-family:var(--display);font-weight:400;font-size:clamp(28px,3vw,38px);line-height:1.1;margin:6px 0 12px}
+.ticket strong{display:block;font-family:var(--display);font-weight:400;font-size:clamp(22px,2.2vw,30px);line-height:1.1;margin:6px 0 12px;overflow-wrap:anywhere}
 .ticket span{display:block;font-size:13px;line-height:1.4;border-top:1px dashed rgba(11,11,10,.4);padding-top:10px}
 .hold-note{color:var(--text-secondary);font-size:14px;margin:0;max-width:34ch}
 
@@ -379,6 +379,31 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
   .steps::before{transform:none}
   .step{opacity:1}
 }
+
+/* ---------- acento roxo: ação e detalhes (a base continua carvão e giz) ---------- */
+:root{--violet:#7c4dff;--violet-deep:#6a3ce8;--violet-ink:#b49bff;--violet-glow:rgba(124,77,255,.38);--violet-soft:rgba(124,77,255,.12)}
+::selection{background:var(--violet);color:#fff}
+:focus-visible{outline-color:var(--violet-ink)}
+.skip{background:var(--violet);color:#fff}
+.btn{background:var(--violet);border-color:var(--violet);color:#fff}
+.btn:hover{background:var(--violet-deep);border-color:var(--violet-deep);box-shadow:0 10px 30px var(--violet-glow)}
+.btn.ghost{background:transparent;color:var(--text-primary);border-color:var(--line-strong);box-shadow:none}
+.btn.ghost:hover{border-color:var(--violet-ink);background:var(--violet-soft)}
+.sec-kicker .dot{border-color:var(--violet-ink)}
+.nd-k i{background:var(--violet-ink);box-shadow:0 0 12px var(--violet-glow)}
+.nd-clock .u.tick b{color:var(--violet-ink)}
+.nd-link:hover{text-decoration-color:var(--violet-ink)}
+.paintring{color:var(--violet-ink)}
+.progress .bar i{background:var(--violet-ink)}
+.step.lit .n{border-color:var(--violet);background:var(--violet);color:#fff}
+.faq details[open] .pm{border-color:var(--violet-ink)}
+.faq details[open] .pm::before,.faq details[open] .pm::after{background:var(--violet-ink)}
+.quotes li{border-left-color:rgba(180,155,255,.55)}
+.appcta{border-color:rgba(124,77,255,.4);background:linear-gradient(135deg,rgba(124,77,255,.10),rgba(15,15,14,.5) 55%)}
+input:focus,select:focus{border-color:var(--violet-ink)}
+.sizes input:checked+span{background:var(--violet);border-color:var(--violet);color:#fff}
+.consent input{accent-color:var(--violet)}
+.success svg{color:var(--violet-ink)}
 </style>
 </head>
 <body>
