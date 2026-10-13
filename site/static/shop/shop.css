@@ -435,3 +435,15 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 .s-form .s-bump{margin:4px 0 0}
 @media (prefers-reduced-motion:no-preference){.s-bump:not(.is-in){animation:bumpin .5s var(--ease) both}}
 @keyframes bumpin{from{opacity:0;transform:translateY(8px)}}
+
+/* cronômetro ao vivo do próximo drop */
+.nd-clock .u.tick b{display:inline-block;animation:tick 1s var(--ease)}
+@keyframes tick{from{opacity:.35;transform:translateY(-3px)}}
+.s-strip{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 18px;min-height:38px;padding:6px var(--gut);background:var(--accent);color:var(--ink)}
+.s-strip .mono{font-size:10px;letter-spacing:.16em}
+.s-strip .nd-clock{margin:0;font-size:15px;font-weight:500;gap:6px}
+.s-strip .nd-clock .u small{color:rgba(11,11,10,.55)}
+.s-strip .nd-clock .sep{color:rgba(11,11,10,.35)}
+.s-strip-cta{text-decoration:underline;text-underline-offset:3px}
+.s-strip:hover .s-strip-cta{text-decoration-thickness:2px}
+@media (max-width:720px){.s-strip-x{display:none}.s-strip{gap:2px 12px}.s-strip > .mono:first-child{flex:0 0 100%;text-align:center}.s-strip .nd-clock{font-size:14px}}

@@ -142,6 +142,7 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
   .settle .gap{display:none}
   .fx-rise .row{justify-content:flex-start;margin-top:18px}
   .fx-rise .row .ghost{display:none}
+  .settle .nd-clock{justify-content:flex-start;margin-top:12px;font-size:22px}
   .cue{bottom:14px}
 }
 
@@ -343,6 +344,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
 .nd-clock{display:flex;align-items:baseline;gap:10px;margin-top:14px;font-family:var(--mono);font-size:clamp(24px,2.6vw,34px);font-variant-numeric:tabular-nums}
 .nd-clock .u small{font-size:.4em;letter-spacing:.12em;color:var(--text-secondary);margin-left:3px}
 .nd-clock .sep{color:var(--line-strong)}
+.nd-clock .u.tick b{display:inline-block;animation:tick 1s var(--ease-out)}
+@keyframes tick{from{opacity:.35;transform:translateY(-3px)}}
+.settle .nd-clock{justify-content:center;margin-top:18px}
+.hero-static .nd-clock{margin-top:14px}
+.clock .nd-clock{justify-content:center;margin-top:12px;color:var(--text-primary);letter-spacing:.02em}
 .nd-txt{margin:10px 0 0;color:var(--text-secondary);font-size:15px;max-width:40ch}
 .nd-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin-top:20px}
 .nd-link{background:none;border:0;padding:0;font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-primary);text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--line-strong);cursor:pointer}
@@ -435,6 +441,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
     <div class="band center settle fx-rise" data-a="0.86" data-b="1" data-seed="41" data-ramp="0.06" style="--sa:.5">
       <p class="kicker">VULTO® · PRÓXIMO DROP</p>
       <h2 data-split="words" id="settle-t">Próximo drop: data a anunciar</h2>
+      <div id="settle-clock"></div>
       <div class="gap" aria-hidden="true"></div>
       <p class="sub">Entra na lista e a gente te avisa pelo app.</p>
       <div class="row"><a class="btn" href="#entrar">Entrar na lista de espera</a><a class="btn ghost" href="#drop">Ver a prévia</a></div>
@@ -451,6 +458,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
     <div class="in">
       <p class="kicker">VULTO · PRÓXIMO DROP</p>
       <h1>Quem viu, viu.</h1>
+      <div id="static-clock"></div>
       <p id="static-p">Próximo drop: data a anunciar. Abre quinta, às 19h, no app. Entra na lista e a gente te avisa.</p>
       <div class="row"><a class="btn" href="#entrar">Entrar na lista</a><a class="btn ghost" href="#drop">Ver a prévia</a></div>
     </div>
@@ -646,7 +654,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;color:var(--text-sec
     $('settle-t').textContent = `Próximo drop: ${when}`;
     $('static-p').textContent = `Próximo drop: ${when}, no app. Entra na lista e a gente te avisa.`;
     $('faq-when').textContent = `O ${V.dropLabel(next)} abre ${when}, no app. Quem está na lista recebe o aviso pelo app.`;
-    $('clock').innerHTML = `<b>${esc(V.dropLabel(next))}</b> · abre ${esc(when)}, no app`;
+    $('clock').innerHTML = `<b>${esc(V.dropLabel(next))}</b> · abre ${esc(when)}, no app${V.clockHTML(next)}`;
+    $('settle-clock').innerHTML = V.clockHTML(next);
+    $('static-clock').innerHTML = V.clockHTML(next);
     $('success-row').innerHTML = `<button class="nd-link" type="button" data-ics="${next.id}">Adicionar o drop à agenda</button>`;
   } else if (open) {
     $('nextdrop').innerHTML = `<p class="nd-k"><i aria-hidden="true"></i>${esc(V.dropLabel(open))}</p><p class="nd-when">Aberto agora no app</p>

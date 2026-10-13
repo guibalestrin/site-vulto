@@ -29,8 +29,8 @@ window.VULTO = (() => {
     { id: 'drop-13', number: 13, name: 'Tinta',    launchAt: '2026-10-01T19:00:00-03:00', confirmed: true,
       // Conceito tirado do pacote de design (o mundo do filme). Troque pelo texto oficial do drop.
       concept: 'A tinta branca do filme da Vulto, sobre algodão preto e concreto paulista. No moletom ela seca e vira o anel que fecha o portal; no jeans, o concreto aparece na lavagem clara.' },
-    // Data cadastrada, ainda não anunciada: sem data nem contagem no site até confirmed: true.
-    { id: 'drop-14', number: 14, name: 'Portal',   launchAt: '2026-10-29T19:00:00-03:00', confirmed: false }
+    // Confirmado pela Vulto: quinta, 29/10/2026, 19h. Cronômetro ao vivo em todo o site.
+    { id: 'drop-14', number: 14, name: 'Portal',   launchAt: '2026-10-29T19:00:00-03:00', confirmed: true }
   ];
 
   /* Canais oficiais. null = ainda não há endereço oficial, e o site não inventa um.
@@ -103,11 +103,10 @@ window.VULTO = (() => {
     els.forEach(el => {
       const d = byId[el.dataset.cd]; if (!d) return;
       const r = left(d);
-      const u = (n, l) => `<span class="u"><b>${pad(n)}</b><small>${l}</small></span>`;
+      const u = (n, l, c = '') => `<span class="u ${c}"><b>${pad(n)}</b><small>${l}</small></span>`;
       const sep = '<span class="sep" aria-hidden="true">:</span>';
       const html = !r.ms ? '<span class="u"><b>Aberto no app</b></span>'
-        : r.d ? u(r.d, 'D') + sep + u(r.h, 'H') + sep + u(r.m, 'M')
-        : u(r.h, 'H') + sep + u(r.m, 'M') + sep + u(r.s, 'S');
+        : (r.d ? u(r.d, 'D') + sep : '') + u(r.h, 'H') + sep + u(r.m, 'M') + sep + u(r.s, 'S', 'tick');
       if (el.innerHTML !== html) el.innerHTML = html;
       const label = !r.ms ? 'O drop já abriu no app.' : `Faltam ${r.d ? r.d + (r.d === 1 ? ' dia, ' : ' dias, ') : ''}${r.h} ${r.h === 1 ? 'hora' : 'horas'} e ${r.m} ${r.m === 1 ? 'minuto' : 'minutos'}.`;
       if (el.getAttribute('aria-label') !== label) el.setAttribute('aria-label', label);

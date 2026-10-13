@@ -445,7 +445,14 @@
   function mountChrome(active) {
     const head = document.getElementById('shop-header');
     if (head) {
-      head.innerHTML = `<a class="s-skip" href="#conteudo">Pular para o conteúdo</a>
+      // Faixa do próximo drop confirmado, com cronômetro ao vivo. Fora do carrinho e do checkout,
+      // para não tirar a atenção de quem está pagando.
+      const next = active === 'shop' ? V.nextDrop() : null;
+      const strip = next ? `<a class="s-strip" href="/#entrar"><span class="mono">${esc(dropLabel(next))} abre ${esc(V.whenShort(next))}<span class="s-strip-x">, só no app</span></span>${V.clockHTML(next)}<span class="mono s-strip-cta">Ativar lembrete →</span></a>` : '';
+      // Link de pular e faixa ficam fora do cabeçalho: o backdrop-filter dele prenderia o link fixo,
+      // e a faixa sai de cena ao rolar sem mexer nos elementos que grudam no topo.
+      head.insertAdjacentHTML('beforebegin', `<a class="s-skip" href="#conteudo">Pular para o conteúdo</a>${strip}`);
+      head.innerHTML = `
         <div class="s-bar">
           <a class="s-logo" href="/" aria-label="Vulto, voltar para a Home">${LOGO}</a>
           <nav class="s-nav" aria-label="Principal">
@@ -466,7 +473,7 @@
         <p class="s-wrap s-demo">Loja demonstrativa: produtos, preços, estoques e avaliações são fictícios e nenhuma compra é processada.</p>`;
     }
     const paint = () => document.querySelectorAll('[data-cart-count]').forEach(el => { el.textContent = cart.count(); });
-    paint(); cart.subscribe(paint); paintSaved();
+    paint(); cart.subscribe(paint); paintSaved(); V.startClocks();
   }
 
   /* Aviso curto e acessível (região viva). */
