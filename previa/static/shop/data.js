@@ -72,13 +72,13 @@ window.VULTO_DATA = (() => {
         description: 'Moletom de capuz em felpa pesada com anel de tinta branca nas costas.',
         garment: 'hoodie', print: 'ring', sizes: TOPS, stock: { preto: [2, 0, 4, 3, 1] },
         images: [
-          { type: 'photo', src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/fda23d5f-efcf-45ab-8f6e-6802e7583c94.jpg', alt: 'Moletom Anel preto, vista de costas com o anel de tinta branca' }
+          { type: 'photo', src: '/assets/peca-moletom.jpg', alt: 'Moletom Anel preto, vista de costas com o anel de tinta branca' }
         ] }),
     p({ id: 'vt-13-03', rating: { avg: 4.8, count: 41 }, slug: 'calca-jeans-concreto', name: 'Calça Jeans Concreto', category: 'calcas', dropId: 'drop-13', price: 349,
         description: 'Jeans de corte reto, lavagem clara e desgaste nos joelhos.',
         garment: 'pants', print: 'none', fit: 'reto', sizes: JEANS, stock: { azul: [1, 4, 6, 0, 2] },
         images: [
-          { type: 'photo', src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/a067344c-bf83-42cb-b8be-d7ea51a21ccc.jpg', alt: 'Calça Jeans Concreto de lavagem clara pendurada em frente a um pilar de concreto' }
+          { type: 'photo', src: '/assets/peca-jeans.jpg', alt: 'Calça Jeans Concreto de lavagem clara pendurada em frente a um pilar de concreto' }
         ] }),
     p({ id: 'vt-13-05', rating: { avg: 4.7, count: 88 }, slug: 'bone-vulto', name: 'Boné Vulto', category: 'bones', dropId: 'drop-13', price: 149,
         description: 'Boné de seis gomos com VULTO bordado na frente e regulagem atrás.',
@@ -141,8 +141,8 @@ window.VULTO_DATA = (() => {
         description: 'Camiseta oversized de algodão pesado com caveira e VULTO em tinta branca com acabamento rachado.',
         garment: 'tee', print: 'skull', fit: 'oversized', sizes: TOPS, stock: { preto: [3, 8, 0, 5, 2] },
         images: [
-          { type: 'photo', src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/4288853e-889e-48de-98ce-f358b5617828.jpg', alt: 'Camiseta Caveira Rachada preta, vista de frente, sob um viaduto de concreto' },
-          { type: 'photo', src: 'https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/e3e4fa63-d79f-4d6f-9ee1-b9050090808e.jpg', alt: 'Camiseta Caveira Rachada preta, enquadramento aberto no concreto' }
+          { type: 'photo', src: '/assets/peca-camiseta.jpg', alt: 'Camiseta Caveira Rachada preta, vista de frente, sob um viaduto de concreto' },
+          { type: 'photo', src: '/assets/hero-poster.jpg', alt: 'Camiseta Caveira Rachada preta, enquadramento aberto no concreto' }
         ] }),
     p({ id: 'vt-14-01', slug: 'camiseta-portal', name: 'Camiseta Portal', category: 'camisetas', dropId: 'drop-14', price: 189,
         description: 'Camiseta de algodão com o anel de tinta na frente.',

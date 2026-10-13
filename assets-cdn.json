@@ -1,5 +1,5 @@
 {
-  "_nota": "Arquivos finais do site hospedados no Higgsfield. A pasta site/assets/ fica vazia no repositório porque este ambiente não consegue baixar esses arquivos; o script de prévia troca os caminhos locais por estes endereços, e o script de publicação pode baixar tudo para assets/.",
+  "_nota": "Endereços de origem (Higgsfield) dos arquivos de site/assets/. Servem só para baixar de novo com tools/baixar-assets.py; o site publicado não usa estes links.",
   "assets/hero-scrub.mp4": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/c2183f64-ae5b-42de-9666-e83a1956f2b1.mp4",
   "assets/hero-poster.jpg": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/e3e4fa63-d79f-4d6f-9ee1-b9050090808e.jpg",
   "assets/hero-ending.jpg": "https://d2ol7oe51mr4n9.cloudfront.net/user_3Kb3YKeSIaGwJYI6odUy0XejCWs/1b36ee9e-1abf-49f8-89ac-209bb2362eb8.jpg",
